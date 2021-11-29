@@ -1,17 +1,23 @@
-import math
+import logging
 import re
 
 import numpy as np
 import pandas as pd
-from bs4 import BeautifulSoup
 import requests
+from bs4 import BeautifulSoup
+from numpy import isnan
 
-from data_classes.Actor import Actor
-from data_classes.Award import Award
-from data_classes.Movie import Movie
-import logging
+from imdb_analyser.data_classes.Actor import Actor
+from imdb_analyser.data_classes.Award import Award
+from imdb_analyser.data_classes.AwardCategory import AwardCategory
+from imdb_analyser.data_classes.Genre import Genre
+from imdb_analyser.data_classes.MediumType import MediumType
+from imdb_analyser.data_classes.Movie import Movie
+from imdb_analyser.data_classes.MovieCast import MovieCast
+from imdb_analyser.data_classes.MovieGenre import MovieGenre
+from imdb_analyser.utils import DatabaseConnector
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(threadname)s] [%(name)s]  [%(levelname)s] %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(name)s]  [%(levelname)s] %(message)s')
 
 BASE_DOMAIN = "http://www.imdb.com"
 # Set request header to US language to get english names for movies instead of german (= default)
@@ -30,40 +36,40 @@ class WebScraper:
         on actors/ actresses, their movies and awards.
         """
 
-        self.actor_df = pd.DataFrame(columns=["actor_href", "fullname", "sex", "img", "bio"])
+        self.actor_df = pd.DataFrame(columns=Actor.db_columns())
         """
         Hold all actor related data (corresponds to "Actor" table in database).
         """
 
-        self.award_df = pd.DataFrame(columns=["actor_href", "award_id", "year", "outcome", "desc", "movie", "category"])
+        self.award_df = pd.DataFrame(columns=Award.db_columns())
         """
         Hold all award related data (corresponds to "Award" table in database).
         """
-        self.cast_df = pd.DataFrame(columns=["actor_href", "movie_href"])
+        self.movie_cast_df = pd.DataFrame(columns=MovieCast.db_columns())
         """
         Hold all cast related data (corresponds to "Cast" table in database).
         """
-        self.movie_df = pd.DataFrame(columns=["href", "title", "year", "type"])
+        self.movie_df = pd.DataFrame(columns=Movie.db_columns())
         """
         Hold all movie related data (corresponds to "Movie" table in database).
         """
-        self.move_genre_df = pd.DataFrame(columns=["movie_href", "genre_id"])
+        self.movie_genre_df = pd.DataFrame(columns=MovieGenre.db_columns())
         """
         Hold mapping from movies to genres (corresponds to "MovieGenre" table in database).
         """
-        self.genre_df = pd.DataFrame(columns=["genre_id", "genre_name"])
+        self.genre_df = pd.DataFrame(columns=Genre.db_columns())
         """
         Hold all genres and a unique ID to identify them (corresponds to "Genre" table in database).
         """
-        self.award_category_df = pd.DataFrame(columns=["id", "cat_name"])
+        self.award_category_df = pd.DataFrame(columns=AwardCategory.db_columns())
         """
         Hold all categories for awards and a unique ID to identify them (corresponds to "AwardCategory" table in database).
         """
-        self.medium_type_df = pd.DataFrame(columns=["met_id", "met_name"])
+        self.medium_type_df = pd.DataFrame(columns=MediumType.db_columns())
         """
         Hold all medium type for a medium/ movie e.g short movie, series etc. and a unique ID to identify them (corresponds to "MediumType" table in database).
         """
-        self.movie_dict = {}
+        self.movie_dict = dict()
         """
         Dictionary to hold all unique movies, allowing to fetch details for a movie only once.
         """
@@ -72,6 +78,8 @@ class WebScraper:
         Dictionary that holds all unique genres of all movies.
         Note: dictionary is required (instead of a set) as order needs to be preserved (> Python 3.7 required)
         """
+        self.medium_types = dict()
+        self.award_types = dict()
 
     def scrape(self):
         """
@@ -79,19 +87,19 @@ class WebScraper:
 
         :return:
         """
-        logger.info("Starting webscraping...")
+        logging.info("Starting webscraping...")
         list_url = BASE_DOMAIN + "/list/ls053501318/"
-        logger.info("Getting actor list from %s...", list_url)
+        logging.info("Getting actor list from %s...", list_url)
         list_page = requests.get(list_url, headers=REQ_HEADERS)
-        logger.info("Done. Got list of actors.")
+        logging.info("Done. Got list of actors.")
         parsed_list_page = BeautifulSoup(list_page.text, "html.parser")
         actor_hrefs = self.get_actor_hrefs(parsed_list_page)
-        logger.info("Getting all actor details for actors %s...", actor_hrefs)
+        logging.info("Getting all actor details for actors %s...", actor_hrefs)
         actor_details = self.get_all_actors_details(actor_hrefs)
-        logger.info("Done. Gathered all actor details.")
-        logger.info("Getting all details for all movies...", self.movie_dict)
+        logging.info("Done. Gathered all actor details.")
+        logging.info("Getting all details for all movies...", self.movie_dict)
         self.get_all_movies_details()
-        logger.info("Done. Got all movie details.")
+        logging.info("Done. Got all movie details.")
         self.put_into_dataframes(actor_details)
 
     def process_movie(self, movie):
@@ -106,74 +114,100 @@ class WebScraper:
         :return:
         """
         # transform to dictionary
-        mov = movie.to_dict()
+        mov = movie.to_db_dict()
 
         # create bridge table for with the current movie ID as a constant value in one column and the genre ID
         # in the other column
-        mov_genres = pd.DataFrame(columns=["movie_href", "genre_id"])
+        mov_genres = pd.DataFrame(columns=MovieGenre.db_columns())
 
         # Map the genre name to its unique ID (DB normalization!)
         mapped_genres = map(lambda genre_name: self.genre_df.loc[genre_name, "genre_id"], movie.genres)
-        mov_genres["genre_id"] = list(mapped_genres)
+        mov_genres["mg_genre_id"] = list(mapped_genres)
         # now fill all rows (determined by length of list above) with current movie_href as constant value
-        mov_genres["movie_href"] = movie.movie_href
+        mov_genres["mg_movie_href"] = movie.movie_href
         # Append the bridge table for this movie to the bridge table containing all the movies
-        self.move_genre_df = self.move_genre_df.append(mov_genres)
-
-
-        # Genre does not need to be stored in Movie table so remove it and free taken up memory
-        del mov["genres"]
+        self.movie_genre_df = self.movie_genre_df.append(mov_genres)
         # now return movie dictionary as it has required format
         return mov
 
     def process_award(self, award):
-        return award.to_dict()
+        """
+        Process/ transform a single award instance.
+        Turns object into dictionary with key names being equivalent to database column names.
+
+        :param award: award to be processed
+        :type award: Award
+        :return:
+        """
+        return award.to_db_dict()
 
     def process_actor(self, actor):
-        return actor.to_dict()
+        """
+        Process/ transform a single actor instance.
+        Turns object into dictionary with key names being equivalent to database column names.
+
+        :param actor: actor to be processed
+        :type actor: Actor
+        :return:
+        """
+        return actor.to_db_dict()
 
     def put_into_dataframes(self, actor_details):
+        """
+
+        :param actor_details:
+        :return:
+        """
         keys = self.all_genres.keys()
         self.genre_df["genre_id"] = range(len(keys))
         self.genre_df["genre_name"] = keys
         self.genre_df.set_index("genre_name", inplace=True)
 
         for actor in actor_details:
-            cast = pd.DataFrame(columns=["actor_href", "movie_href"])
-            cast["movie_href"] = actor.movies
-            cast["actor_href"] = actor.actor_href
-            self.cast_df = self.cast_df.append(cast)
-
+            cast = pd.DataFrame(columns=MovieCast.db_columns())
+            cast["cast_movie_href"] = actor.movies
+            cast["cast_actor_href"] = actor.actor_href
+            self.movie_cast_df = self.movie_cast_df.append(cast)
             transformed_awards = map(self.process_award, actor.awards)
-            award = pd.DataFrame(list(transformed_awards), columns=["actor_href", "year", "outcome", "desc", "movie", "category"])
-            award["award_id"] = range(award.shape[0])
-            award["actor_href"] = actor.actor_href
+            award = pd.DataFrame(list(transformed_awards), columns=Award.db_columns())
+            award["aw_id"] = range(award.shape[0])
+            award["aw_actor_href"] = actor.actor_href
             self.award_df = self.award_df.append(award)
 
         transformed_actors = map(self.process_actor, actor_details)
-        self.actor_df = pd.DataFrame(list(transformed_actors), columns=["actor_href", "fullname", "sex", "img", "bio"])
-
-        pd.set_option('display.max_columns', None)
-        pd.set_option('display.max_rows', None)
+        self.actor_df = pd.DataFrame(list(transformed_actors), columns=Actor.db_columns())
+        # pd.set_option('display.max_columns', None)
+        # pd.set_option('display.max_rows', None)
 
         # Process each movie (use map() built-in for better performance)
         # i. e. Transform movie object and fill related tables MovieGenre und Genre
         transformed_movies = map(self.process_movie, self.movie_dict.values())
         # Fill table "Movie"
-        self.movie_df = pd.DataFrame(list(transformed_movies))
-        print("Genre Table")
-        print(self.genre_df)
-        print("MovieGenre Table")
-        print(self.move_genre_df)
-        print("Movie Table")
-        print(self.movie_df)
-        print("Cast Table")
-        print(self.cast_df)
-        print("Award Table")
-        print(self.award_df)
-        print("Actor table")
-        print(self.actor_df)
+        self.movie_df = pd.DataFrame(list(transformed_movies), columns=Movie.db_columns())
 
+        unq_cats = self.award_df["aw_category_id"].unique()
+        ids = range(len(unq_cats))
+        self.award_category_df = pd.DataFrame({"awc_id": ids, "awc_cat_name": unq_cats})
+        map_cats_to_fk = dict(zip(unq_cats, ids))
+        self.award_df["aw_category_id"] = list(map(lambda cat: map_cats_to_fk[cat], self.award_df["aw_category_id"]))
+
+        unq_types = self.movie_df["mov_type"].unique()
+        ids = range(len(unq_types))
+        self.medium_type_df = pd.DataFrame({"met_id": ids, "met_name": unq_types})
+        map_types_to_fk = dict(zip(unq_types, ids))
+        self.movie_df["mov_type"] = list(map(lambda movie_type: map_types_to_fk[movie_type], self.movie_df["mov_type"]))
+
+        DatabaseConnector.insert_into_db_table(self.actor_df, Actor)
+        DatabaseConnector.insert_into_db_table(self.award_category_df, AwardCategory)
+        DatabaseConnector.insert_into_db_table(self.medium_type_df, MediumType)
+        DatabaseConnector.insert_into_db_table(self.movie_df, Movie)
+        DatabaseConnector.insert_into_db_table(self.award_df, Award)
+        self.genre_df = self.genre_df.reset_index()
+        DatabaseConnector.insert_into_db_table(self.genre_df, Genre)
+        DatabaseConnector.insert_into_db_table(self.movie_genre_df, MovieGenre)
+        DatabaseConnector.insert_into_db_table(self.movie_cast_df, MovieCast)
+
+        logging.info("Insertion into actor table is done")
 
     def get_actor_hrefs(self, list_page):
         """Get hrefs for all the relevant actors/ actresses.
@@ -278,6 +312,9 @@ class WebScraper:
         :return: award and its details
         """
 
+        # compile regex to filter movie names from other text that might be there where usually the movie name is
+        desc_regex = re.compile("")
+
         def get_year(award_row):
             """
             Extract year from row
@@ -304,8 +341,10 @@ class WebScraper:
             return category, outcome
 
         def get_desc(award_row):
+
             desc = ""
             movie = ""
+            href = ""
             desc_tag = award_row.find("td", class_="award_description")
             if desc_tag:
                 for i, content in enumerate(desc_tag.contents):
@@ -313,13 +352,18 @@ class WebScraper:
                         # award description here
                         desc = content.get_text().strip()
                     elif i == 3:
-                        # movie/ title name here
-                        movie = content.get_text().strip()
-            return desc, movie
+                        # if there is an href to a movie (starting with "/title/") get the string
+                        href_exists = content.has_attr("href")
+                        if href_exists:
+                            # movie/ title name here; Add trailing slash to be compatible with movie href collected from actor details page,
+                            # otherwise a foreign key error is thrown as the reference key will not be found because they are not the same
+                            href = content["href"] + "/"
+                            movie = content.get_text().strip()
+            return desc, movie, href
 
         year = get_year(award_row)
         category, outcome = get_outcome(award_row)
-        desc, movie = get_desc(award_row)
+        desc, movie, href = get_desc(award_row)
 
         # Process groups:
         # An actor may receive several awards in the same year,
@@ -336,7 +380,8 @@ class WebScraper:
         #     Therefore the consecutive row will also have all information filled in and will become the previous row
         #     for a next possible row -> Done
         # if there is no year, take year from previous row
-        if not year and prev_award:
+
+        if not year or isnan(year) and prev_award:
             year = prev_award.year
         # if there is no category get it from previous row
         if not category and prev_award:
@@ -344,7 +389,24 @@ class WebScraper:
         if not outcome and prev_award:
             outcome = prev_award.outcome
 
-        return Award(year=year, outcome=outcome, desc=desc, movie=movie, category=category)
+        return Award(year=year, outcome=outcome, desc=desc, movie=movie, movie_href=href, category=category)
+
+    def get_actor_sex(self, actor_page):
+        """Get sex of the actor/ actress
+
+        :param actor_page: BeautifulSoup
+        :type actor_page: BeautifulSoup
+        :return: "M" for male, "F" for female
+        """
+        jobs = actor_page.find(id="name-job-categories")
+        # check wether a link with href to acto exists if yes -> male, else female
+        # As the list only has actors and actresses it must be either of the two
+        actor = jobs.find("a", attrs={"href": "#actor"})
+        if not actor:
+            sex = "F"
+        else:
+            sex = "M"
+        return sex
 
     def get_actor_details(self, actor_href):
         """Get all details to an actor/ actress.
@@ -354,11 +416,12 @@ class WebScraper:
         :return: an actor/ actress with their details
         """
         actor_url = BASE_DOMAIN + actor_href
-        logger.info("Getting details for actor from %s...", actor_url)
+        logging.info("Getting details for actor from %s...", actor_url)
         actor_page = requests.get(actor_url, headers=REQ_HEADERS)
         parsed_actor_page = BeautifulSoup(actor_page.text, "html.parser")
         # Get fullname
         fullname = parsed_actor_page.find("span", class_="itemprop").get_text()
+        sex = self.get_actor_sex(parsed_actor_page)
         # Get biography
         bio = self.get_actor_bio(actor_href)
         # Get image URL
@@ -371,8 +434,8 @@ class WebScraper:
         awards = self.get_actor_awards(actor_href)
         # Create a new actor object for an actor/ actress with all their details
         actor = Actor(actor_href=actor_href, fullname=fullname, bio=bio, awards=awards, movies=movies.keys(),
-                      sex="Male", img=img)
-        logger.info("Done. Got all details for actor %s => %s", actor_href, actor)
+                      sex=sex, img=img)
+        logging.info("Done. Got all details for actor %s \n%s", actor_url, actor)
         return actor
 
     def get_all_movies_details(self):
@@ -383,9 +446,10 @@ class WebScraper:
         """
         counter = 0
         for href, movie in self.movie_dict.items():
-            logger.info("Getting movie details for movie %s", href)
+            url = BASE_DOMAIN + href
+            logging.info("Getting movie details for movie %s", url)
             self.get_movie_details(href, movie)
-            logger.info("Got details for movie %s => %s", href, movie)
+            logging.info("Got details for movie %s:\n%s", url, movie)
             counter += 1
             if counter == 4:
                 break
@@ -431,13 +495,13 @@ class WebScraper:
         """
         actors = []
         for href in actor_hrefs:
-            logger.info("Getting all Current actor: %s", href)
-            actorDetail = self.get_actor_details(href)
-            actors.append(actorDetail)
+            logging.info("Getting all Current actor: %s", href)
+            actor_detail = self.get_actor_details(href)
+            actors.append(actor_detail)
             break
 
         return actors
 
 
-scraper = WebScraper()
-scraper.scrape()
+# scraper = WebScraper()
+# scraper.scrape()

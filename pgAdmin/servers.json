@@ -1,0 +1,13 @@
+{
+    "Servers": {
+        "0": {
+            "Name": "Database of Hollywood Actors and Actresses",
+            "Group": "Applied Data Science with Python",
+            "Port": 5432,
+            "Username": "admin",
+            "Host": "postgres-db",
+            "SSLMode": "prefer",
+            "MaintenanceDB": "imdb"
+        }
+    }
+}
