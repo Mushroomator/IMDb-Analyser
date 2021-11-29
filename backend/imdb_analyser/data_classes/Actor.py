@@ -25,7 +25,7 @@ class Actor(DataClass):
         :return: database column data types
         """
         return {
-            "act_href": VARCHAR(length=15),
+            "act_href": VARCHAR(length=10),
             "act_fullname": VARCHAR(length=50),
             "act_sex": CHAR(length=1),
             "act_img_url": VARCHAR(length=255),

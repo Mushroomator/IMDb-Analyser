@@ -18,7 +18,7 @@ def get_actor_about(actor_id):
     WHERE act_href = %(actor_id)s;
     """
 
-    actor_about = DatabaseConnector.query(query_str=query, query_params={"actor_id": f"/name/{actor_id}"})
+    actor_about = DatabaseConnector.query(query_str=query, query_params={"actor_id": actor_id})
     return actor_about
 
 def get_actor_genres(actor_id):
@@ -39,7 +39,7 @@ def get_actor_genres(actor_id):
     WHERE act.act_href = %(actor_id)s;
     """
 
-    genres = DatabaseConnector.query(query_str=query, query_params={"actor_id": f"/name/{actor_id}"})
+    genres = DatabaseConnector.query(query_str=query, query_params={"actor_id": actor_id})
     return genres
 
 
@@ -63,7 +63,7 @@ def get_actor_movies(actor_id):
         INNER JOIN medium_type as mt ON mov.mov_type = mt.met_id
         WHERE act.act_href = %(actor_id)s;
         """
-    results = DatabaseConnector.query(query_str=query, query_params={"actor_id": f"/name/{actor_id}"})
+    results = DatabaseConnector.query(query_str=query, query_params={"actor_id": actor_id})
     return results
 
 def get_all_movie_genres(actor_id):
@@ -83,7 +83,7 @@ def get_all_movie_genres(actor_id):
             INNER JOIN genre AS gen ON gen.genre_id = mg.mg_genre_id
             WHERE act.act_href = %(actor_id)s;
             """
-    results = DatabaseConnector.query(query_str=query, query_params={"actor_id": f"/name/{actor_id}"})
+    results = DatabaseConnector.query(query_str=query, query_params={"actor_id": actor_id})
     return results
 
 def get_actor_awards(actor_id):
@@ -115,5 +115,5 @@ def get_actor_awards(actor_id):
         order by aw.aw_year DESC, aw.aw_category_id;
     """
 
-    awards = DatabaseConnector.query(query_str=query, query_params={"actor_id": f"/name/{actor_id}"})
+    awards = DatabaseConnector.query(query_str=query, query_params={"actor_id": actor_id})
     return awards

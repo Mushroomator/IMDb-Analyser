@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS medium_type (
 	Create table to store movies
 */
 CREATE TABLE IF NOT EXISTS movie (
-	mov_href varchar(18) PRIMARY KEY NOT NULL,
+	mov_href varchar(10) PRIMARY KEY NOT NULL,
 	mov_title varchar(80) NOT NULL,
 	-- movie might not have been released yet so it can be null
 	mov_year smallint,
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS award  (
     -- "Winner" or "Nominee" 
 	aw_outcome varchar(7) NOT NULL,
 	aw_description varchar(255),
-	aw_movie_href varchar(18),
+	aw_movie_href varchar(10),
 	aw_movie_name varchar(255),
     aw_category_id SMALLINT,
 	PRIMARY KEY (aw_id, aw_actor_href),
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS genre (
 	Create table to store movie genres
 */
 CREATE TABLE IF NOT EXISTS movie_genre  (
-	mg_movie_href varchar(18) NOT NULL,
+	mg_movie_href varchar(10) NOT NULL,
     mg_genre_id smallint NOT NULL,
 	PRIMARY KEY (mg_movie_href, mg_genre_id),
 	FOREIGN KEY (mg_movie_href) REFERENCES movie(mov_href),
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS movie_genre  (
 */
 CREATE TABLE IF NOT EXISTS movie_cast (
 	cast_actor_href varchar(15) NOT NULL,
-	cast_movie_href varchar(18) NOT NULL,
+	cast_movie_href varchar(10) NOT NULL,
 	PRIMARY KEY (cast_actor_href, cast_movie_href),
 	FOREIGN KEY (cast_actor_href) REFERENCES actor(act_href),
 	FOREIGN KEY (cast_movie_href) REFERENCES movie(mov_href)

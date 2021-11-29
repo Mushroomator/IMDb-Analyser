@@ -23,8 +23,8 @@ class MovieCast:
         :return: database column data types
         """
         return {
-            "cast_actor_href": VARCHAR(length=15),
-            "cast_movie_href": VARCHAR(length=18),
+            "cast_actor_href": VARCHAR(length=10),
+            "cast_movie_href": VARCHAR(length=10),
         }
 
     @staticmethod

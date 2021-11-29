@@ -23,7 +23,7 @@ class MovieGenre:
         :return: database column data types
         """
         return {
-            "mg_movie_href": VARCHAR(length=18),
+            "mg_movie_href": VARCHAR(length=10),
             "mg_genre_id": SMALLINT()
         }
 

@@ -20,6 +20,8 @@ from imdb_analyser.utils import DatabaseConnector
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(name)s]  [%(levelname)s] %(message)s')
 
 BASE_DOMAIN = "http://www.imdb.com"
+ACTOR_PAGE_PREFIX = "/name/"
+MOVIE_PAGE_PREFIX = "/title/"
 # Set request header to US language to get english names for movies instead of german (= default)
 REQ_HEADERS = {"Accept-Language": "en-US,en;q=0.5"}
 
@@ -100,7 +102,9 @@ class WebScraper:
         logging.info("Getting all details for all movies...", self.movie_dict)
         self.get_all_movies_details()
         logging.info("Done. Got all movie details.")
+        logging.info("Inserting gathered data into PostgreSQL database...")
         self.put_into_dataframes(actor_details)
+        logging.info("Done. Inserted gathered data into PostgreSQL database.")
 
     def process_movie(self, movie):
         """
@@ -216,11 +220,17 @@ class WebScraper:
         :type list_page: BeautifulSoup
         :return: list of hrefs, one for each actor
         """
+        # compile regex up front to increase performance
+        match_actor_id = re.compile("(?<=\/name\/)\w*")
         hrefs = []
         actors = list_page.select(
             "#main > div > div.lister.list.detail.sub-list > div.lister-list > * > div.lister-item-content > h3 > a")
         for actor in actors:
-            hrefs.append(actor["href"])
+            actor_id_match = re.search(match_actor_id, actor["href"])
+            if actor_id_match:
+                # get first (and only) match
+                actor_id = actor_id_match.group(0)
+                hrefs.append(actor_id)
         return hrefs
 
     def get_actor_img(self, actor_page):
@@ -240,7 +250,7 @@ class WebScraper:
         :type actor_href: str
         :return: biography for given actor/ actress
         """
-        bio_page = requests.get(BASE_DOMAIN + actor_href + "/bio", headers=REQ_HEADERS)
+        bio_page = requests.get(BASE_DOMAIN + ACTOR_PAGE_PREFIX + actor_href + "/bio", headers=REQ_HEADERS)
         parsed_bio_page = BeautifulSoup(bio_page.text, "html.parser")
         bio_tag = parsed_bio_page.find("p")
         bio_text = str(bio_tag.get_text()).strip()
@@ -254,6 +264,12 @@ class WebScraper:
         """
         # Replace '&nbsp;' which is turned to Unicode by beautiful soup with actual space
         all_movies = actor_page.find_all("div", class_="filmo-row", id=re.compile("^actor-"))
+
+        # compile regex up-front to increase performance
+        match_movie_id = re.compile("(?<=\/title\/)\w*")
+        match_movie_type = re.compile("(?<=\().+?(?=\))")
+        match_year = re.compile("[1-2][0-9][0-9][0-9]")
+        match_invalid_chars = re.compile("\xa0|\n")
         movies = {}
         for movie in all_movies:
             year = np.NAN
@@ -267,18 +283,22 @@ class WebScraper:
                     multiple_years = year_str.split("-")
                     if len(multiple_years) == 2:
                         year_str = multiple_years[0]
-                    year_str = re.sub("\xa0|\n", "", year_str)
-                    year_str = re.search("[1-2][0-9][0-9][0-9]", year_str)
+                    year_str = re.sub(match_invalid_chars, "", year_str)
+                    year_str = re.search(match_year, year_str)
                     if year_str:
                         year = int(year_str.group(0))
                 if i == 3:
                     movie_link = next(element.children)
-                    href = movie_link["href"]
+                    # only get the number no need too get the /name prefix
+                    href_match = re.search(match_movie_id, movie_link["href"])
+                    if href_match:
+                        # the first match is the relevant one (there is only one match)
+                        href = href_match.group(0)
                     title = movie_link.get_text()
                 if i == 4:
                     # There might be a movie status in brackets instead of the movie type
                     if not ("class" in element and element["class"] == "in_production"):
-                        movie_type_match = re.search("(?<=\().+?(?=\))", element.get_text())
+                        movie_type_match = re.search(match_movie_type, element.get_text())
                         if movie_type_match:
                             # there might be a movie type there might not be one, if not the type is movie as defined above
                             type = movie_type_match.group(0)
@@ -286,7 +306,7 @@ class WebScraper:
         return movies
 
     def get_actor_awards(self, actor_href):
-        actor_awards_page = requests.get(BASE_DOMAIN + actor_href + "/awards")
+        actor_awards_page = requests.get(BASE_DOMAIN + ACTOR_PAGE_PREFIX + actor_href + "/awards")
         parsed_awards_page = BeautifulSoup(actor_awards_page.text, "html.parser")
         award_tables = parsed_awards_page.find_all("table", class_="awards")
 
@@ -312,8 +332,8 @@ class WebScraper:
         :return: award and its details
         """
 
-        # compile regex to filter movie names from other text that might be there where usually the movie name is
-        desc_regex = re.compile("")
+        # compile regex up front to increase performance
+        match_movie_id = re.compile("(?<=\/title\/)\w*")
 
         def get_year(award_row):
             """
@@ -357,7 +377,10 @@ class WebScraper:
                         if href_exists:
                             # movie/ title name here; Add trailing slash to be compatible with movie href collected from actor details page,
                             # otherwise a foreign key error is thrown as the reference key will not be found because they are not the same
-                            href = content["href"] + "/"
+                            movie_id_regex_res = re.search(match_movie_id, content["href"])
+                            if movie_id_regex_res:
+                                # get first (and only) match
+                                href = movie_id_regex_res.group(0)
                             movie = content.get_text().strip()
             return desc, movie, href
 
@@ -415,7 +438,7 @@ class WebScraper:
         :type actor_href: str
         :return: an actor/ actress with their details
         """
-        actor_url = BASE_DOMAIN + actor_href
+        actor_url = BASE_DOMAIN + ACTOR_PAGE_PREFIX + actor_href
         logging.info("Getting details for actor from %s...", actor_url)
         actor_page = requests.get(actor_url, headers=REQ_HEADERS)
         parsed_actor_page = BeautifulSoup(actor_page.text, "html.parser")
@@ -446,7 +469,7 @@ class WebScraper:
         """
         counter = 0
         for href, movie in self.movie_dict.items():
-            url = BASE_DOMAIN + href
+            url = BASE_DOMAIN + MOVIE_PAGE_PREFIX + href
             logging.info("Getting movie details for movie %s", url)
             self.get_movie_details(href, movie)
             logging.info("Got details for movie %s:\n%s", url, movie)
@@ -463,7 +486,7 @@ class WebScraper:
         :type movie: Movie
         :return: all details for a specific movie
         """
-        movie_page = requests.get(BASE_DOMAIN + movie_href, headers=REQ_HEADERS)
+        movie_page = requests.get(BASE_DOMAIN + MOVIE_PAGE_PREFIX + movie_href, headers=REQ_HEADERS)
         parsed_movie_page = BeautifulSoup(movie_page.text, "html.parser")
         # The rating is a span with an class that starts with "AggregateRatingButton__RatingScore-sc"
         rating_span = parsed_movie_page.find("span", class_=re.compile("AggregateRatingButton__RatingScore-sc"))

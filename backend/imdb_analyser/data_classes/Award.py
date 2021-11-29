@@ -28,12 +28,12 @@ class Award(DataClass):
         :return: database column data types
         """
         return {
-            "aw_actor_href": VARCHAR(length=15),
+            "aw_actor_href": VARCHAR(length=10),
             "aw_id": SMALLINT(),
             "aw_year": SMALLINT(),
             "aw_outcome": VARCHAR(length=7),
             "aw_description": VARCHAR(length=255),
-            "aw_movie_href": VARCHAR(length=255),
+            "aw_movie_href": VARCHAR(length=10),
             "aw_movie_name": VARCHAR(length=255),
             "aw_category_id": SMALLINT()
         }

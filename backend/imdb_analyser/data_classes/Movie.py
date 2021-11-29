@@ -26,7 +26,7 @@ class Movie:
         :return: database column data types
         """
         return {
-            "mov_href": VARCHAR(length=18),
+            "mov_href": VARCHAR(length=10),
             "mov_title": VARCHAR(length=80),
             "mov_year": SMALLINT(),
             "mov_type": SMALLINT(),
