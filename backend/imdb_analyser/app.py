@@ -61,6 +61,16 @@ def handle_web_scape():
     }
 
 
+@app.route("/api/actors", methods=["POST"])
+def handle_actor_list():
+    all_actors_df = actor_model.get_all_actors_about()
+    all_actors = all_actors_df.to_dict(orient="records")
+    return {
+        "timestamp": datetime.now().isoformat(),
+        "data": all_actors
+    }
+
+
 @app.route("/api/actor/<string:actor_href>", methods=["POST"])
 def handle_actor_req(actor_href):
     # escape parameter as it could be manipulated by the user
@@ -100,7 +110,7 @@ def handle_actor_req(actor_href):
 
 
     # ALL TIME MOVIES
-    all_time_movies = movies_df[["mov_href", "mov_year", "mov_title", "mov_rating", "met_name", "genres"]].sort_values(by=["mov_year"], ascending=False).to_dict(orient="records")
+    all_time_movies = movies_df[["mov_href", "mov_year", "mov_title", "mov_rating", "met_name", "genres"]].sort_values(by=["mov_year"], ascending=False).fillna(0).to_dict(orient="records")
 
     # RATINGS
     # get everything required to calculate with rating

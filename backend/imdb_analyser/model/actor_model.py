@@ -1,5 +1,22 @@
 from imdb_analyser.utils import DatabaseConnector
 
+def get_all_actors_about():
+    """
+    Get all information about all actors/ actresses
+
+    :return: all information about all actors/ actresses
+    """
+    query = """
+        SELECT act_href,
+    	       act_fullname,
+    	       act_sex,
+    	       act_img_url,
+    	       act_bio
+        FROM actor
+        """
+
+    actor_about = DatabaseConnector.query(query_str=query)
+    return actor_about
 
 def get_actor_about(actor_id):
     """

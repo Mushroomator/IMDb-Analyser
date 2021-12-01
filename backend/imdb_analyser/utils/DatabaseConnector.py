@@ -65,7 +65,7 @@ def is_table_empty(table_name):
     return result.empty
 
 
-def query(query_str, query_params):
+def query(query_str, query_params=None):
     """
     Query database.
 

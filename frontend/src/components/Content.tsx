@@ -1,11 +1,8 @@
 import { Container, GridItem, useColorModeValue } from "@chakra-ui/react";
+import { Outlet } from "react-router-dom";
 import colors from "../colors";
 
-export interface IContent {
-    children: React.ReactNode
-}
-
-export function Content({children}: IContent) {
+export function Content() {
     const scrollbarColor = useColorModeValue(colors.scrollbarColor.light, colors.scrollbarColor.dark);
 
     return (
@@ -14,8 +11,9 @@ export function Content({children}: IContent) {
                 h={"100%"}
                 maxW={["xs", "2xl", "2xl", "3xl", "4xl"]}
                 centerContent
+                p={4}
             >
-                {children}
+                <Outlet/>
             </Container>
         </GridItem>
     )
