@@ -1,15 +1,11 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Grid, GridItem, Heading, Spinner, Text, VStack } from "@chakra-ui/react";
-import { useState } from "react";
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Heading, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { mapSexIdentToTxt } from "../config";
 import { useFetch } from "../hooks/useFetch";
-import { IActorDetails, IActorsResponse, IActorDetailsResponse } from "../types";
+import { IActorDetails, IActorDetailsResponse } from "../types";
+import { ActorRating } from "./ActorRating";
 import { AwardTable } from "./AwardTable";
-import { GenericTable } from "./GenericTable";
 import { MovieTable } from "./MovieTable";
-import { NoDataAlert } from "./NoDataAlert";
-import { PerYearRatingTable } from "./PerYearRatingTable";
-import { Rating } from "./Rating";
 
 export function ActorDetails() {
     const { actorId } = useParams();
@@ -38,6 +34,9 @@ export function ActorDetails() {
             p={8}
             w={"100%"}>
             <Avatar
+                bg={"blue.500"}
+                fontWeight={"bold"}
+                fontSize={"5xl"}
                 borderRadius={"full"}
                 src={actorDetails.about.act_img_url}
                 name={actorDetails.about.act_fullname}
@@ -49,21 +48,21 @@ export function ActorDetails() {
                 borderColor={"blue.500"} />
             <Heading>{actorDetails.about.act_fullname}</Heading>
             <Text pb={8} fontSize={"sm"}>{mapSexIdentToTxt[actorDetails.about.act_sex]}</Text>
-            <Grid
-                w={"100%"}
-                gridTemplateAreas={`
-                "about-details per-year-rating"
-                `}
-                gridTemplateColumns={"50% 50%"}
-            >
-                <GridItem gridArea={"about-details"}>
-                    <Rating rating={actorDetails.overallRating} />
-                </GridItem>
-                <GridItem gridArea={"per-year-rating"}>
-                    <PerYearRatingTable key={"per-year-movie-rating-table"} ratings={actorDetails.perYearRating} />
-                </GridItem>
-            </Grid>
+
             <Accordion w={"100%"} defaultIndex={[0]} allowMultiple>
+                <AccordionItem w={"100%"}>
+                    <h2>
+                        <AccordionButton>
+                            <Box flex='1' textAlign='left'>
+                                <Heading size={"sm"} colorScheme={"blackAlpha"}>Rating</Heading>
+                            </Box>
+                            <AccordionIcon />
+                        </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4} w={"100%"}>
+                        <ActorRating overallRating={actorDetails.overallRating} perYearRating={actorDetails.perYearRating} />
+                    </AccordionPanel>
+                </AccordionItem>
                 <AccordionItem w={"100%"}>
                     <h2>
                         <AccordionButton>
@@ -74,7 +73,7 @@ export function ActorDetails() {
                         </AccordionButton>
                     </h2>
                     <AccordionPanel pb={4} w={"100%"}>
-                        <MovieTable key={"top5-movie-table"} movies={actorDetails.topFiveMovies} />
+                        <MovieTable key={"top5-movie-table"} data={actorDetails.topFiveMovies}/>
                     </AccordionPanel>
                 </AccordionItem>
                 <AccordionItem>
@@ -100,7 +99,7 @@ export function ActorDetails() {
                         </AccordionButton>
                     </h2>
                     <AccordionPanel pb={4}>
-                        <MovieTable key={"all-time-movie-table"} movies={actorDetails.allTimeMovies} />
+                        <MovieTable key={"all-time-movie-table"} data={actorDetails.allTimeMovies}/>
                     </AccordionPanel>
                 </AccordionItem>
                 <AccordionItem>
@@ -113,7 +112,7 @@ export function ActorDetails() {
                         </AccordionButton>
                     </h2>
                     <AccordionPanel pb={4}>
-                        <AwardTable key={"award-table"} awards={actorDetails.awards} />
+                        <AwardTable key={"award-table"} data={actorDetails.awards} />
                     </AccordionPanel>
                 </AccordionItem>
             </Accordion>

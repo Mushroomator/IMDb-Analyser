@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { ChakraProvider, ColorModeScript } from "@chakra-ui/react"
 import './index.css';
-import App from './App';
+import App from './components/App';
 import "@fontsource/open-sans"
 import theme from "./chakraTheme";
 import { BrowserRouter } from 'react-router-dom';

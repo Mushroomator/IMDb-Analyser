@@ -24,8 +24,11 @@ export function ActorList() {
 
 
     useEffect(() => {
-        const searchResults = searchForStrInActorsAbout(allActors, searchStr.toLowerCase());
-        setCurActors(searchResults);
+        const search = async (searchStr: string) => {
+            const searchResults = await searchForStrInActorsAbout(allActors, searchStr.toLowerCase());
+            setCurActors(searchResults);
+        }
+        search(searchStr);
     }, [searchStr, allActors])
 
     return (

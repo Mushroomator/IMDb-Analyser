@@ -1,9 +1,8 @@
 import { DeleteIcon, DownloadIcon } from "@chakra-ui/icons";
-import { Box, Button, Grid, GridItem, Heading, HStack, IconButton, Image, Link, ListItem, textDecoration, Tooltip, UnorderedList } from "@chakra-ui/react";
+import { Button, Grid, GridItem, Heading, HStack, IconButton, Image, Link, Tooltip } from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { deleteAllDataFromDb, triggerWebscraping } from "../requests";
-import { ISearchBar, SearchBar } from "./SearchBar";
 
 export function Header() {
     return (
@@ -23,8 +22,8 @@ export function Header() {
                     gridArea={"left"}
                 >
                     <HStack h={"100%"} maxH={"100%"} alignItems={"center"} justifyContent={"start"} w={"100%"}>
-                        <Image objectFit={"contain"} p={3} h={"100%"} maxW={"auto"} maxH={"100%"} src={logo} alt="IMDb Actor Database Logo" justifySelf={"start"} />
-                        <Heading colorScheme={"blue"} display={["none", null, null, "block"]} size={"md"} justifyContent={"start"}>Actor Explorer</Heading>
+                        <Image objectFit={"contain"} p={3} h={"100%"} maxW={"auto"} maxH={"100%"} src={logo} alt="IMDb Analyser Logo" justifySelf={"start"} />
+                        <Heading colorScheme={"blue"} display={["none", null, null, "block"]} size={"md"} justifyContent={"start"}>IMDb Analyser</Heading>
                     </HStack>
                 </GridItem>
                 <GridItem

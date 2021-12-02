@@ -1,10 +1,7 @@
-import { Container, GridItem, useColorModeValue } from "@chakra-ui/react";
+import { Container, GridItem } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
-import colors from "../colors";
 
 export function Content() {
-    const scrollbarColor = useColorModeValue(colors.scrollbarColor.light, colors.scrollbarColor.dark);
-
     return (
         <GridItem gridArea={"content"} bg={"whiteAlpha.300"}>
             <Container

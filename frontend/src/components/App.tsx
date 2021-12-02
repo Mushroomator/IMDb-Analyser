@@ -1,18 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Grid, GridItem, Progress } from "@chakra-ui/react"
-import './App.css';
-import { Header } from './components/Header';
-import { Content } from './components/Content';
-import { searchForStrInActorsAbout } from './searchUtils';
-import ActorCard from './components/ActorCard';
-import { IActorAbout, IActorsResponse } from './types';
-import { NoDataAlert } from './components/NoDataAlert';
-import { useFetch } from './hooks/useFetch';
+import { Grid } from "@chakra-ui/react"
+import { Header } from './Header';
+import { Content } from './Content';
 import { Route, Routes } from 'react-router-dom';
-import { GenericTable } from './components/GenericTable';
-import { ActorDetails } from './components/ActorDetails';
-import { ActorList } from './components/ActorList';
-import { Home } from './components/Home';
+import { ActorDetails } from './ActorDetails';
+import { ActorList } from './ActorList';
+import { Home } from './Home';
 
 function App() {
   return (
