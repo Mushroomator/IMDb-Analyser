@@ -39,7 +39,7 @@ export async function searchForStrInMovies(all: Array<IActorMovie>, searchStr: s
             || it.mov_rating.toString().toLowerCase().includes(searchStr)
             || it.mov_title.toString().toLowerCase().includes(searchStr)
             || it.mov_year.toString().toLowerCase().includes(searchStr)
-            || it.genres.some(genre => genre.toLowerCase().includes(searchStr))) results.push(it);
+            || it.mov_genres.some(genre => genre.toLowerCase().includes(searchStr))) results.push(it);
     });
     return results;
 }

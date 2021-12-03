@@ -1,22 +1,34 @@
-import asyncio
-import json
-import os
+import concurrent.futures
+import itertools
 import logging
-from concurrent.futures import ThreadPoolExecutor, Future
-from markupsafe import escape
-from datetime import datetime
+import os
+from concurrent.futures import ThreadPoolExecutor
 
-from flask import Flask
+from flask import Flask, redirect, url_for
 
-from imdb_analyser.model import actor_model
+from imdb_analyser.actor_controller import actor_controller
+from imdb_analyser.movie_controller import movie_controller
 from imdb_analyser.utils import DatabaseConnector
 from utils.WebScraper import WebScraper
 
+# serve static files required for react
 app = Flask(__name__, static_folder="../../frontend/build", static_url_path="/")
 
+# register controllers
+app.register_blueprint(movie_controller)
+app.register_blueprint(actor_controller)
+
+# configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(name)s]  [%(levelname)s] %(message)s')
 
-executor = ThreadPoolExecutor(max_workers=3)
+# create a thread pool with multiple worker threads to divide work
+max_workers = 1
+executor = ThreadPoolExecutor(max_workers=max_workers)
+workers = []
+
+
+web_scraper = None
+no_all_actors = 50
 
 
 @app.route("/")
@@ -28,7 +40,7 @@ def index():
     return app.send_static_file("index.html")
 
 
-@app.route("/api/delete-all", methods=["DELETE"])
+@app.route("/api/v1/delete-all", methods=["DELETE"])
 def handle_delete():
     """
     Deletion of all data in the database is requested.
@@ -50,98 +62,65 @@ def handle_delete():
     return msg
 
 
-@app.route("/api/scrape", methods=["POST"])
+@app.route("/api/v1/scrape", methods=["POST"])
 def handle_web_scape():
+    """
+    Triggers webscraping from https://imdb.com
+
+    :return:
+    """
+    global web_scraper, workers
+
+    if web_scraper:
+        redirect(url_for("/api/v1/scrape/progress"))
     scraper = WebScraper()
-    scrape_task = executor.submit(scraper.scrape)
-    scrape_task.add_done_callback(lambda future: app.logger.info("Web scraped everything"))
+    web_scraper = scraper
+
+    def web_scrape_task_done(future, thread_id):
+        global web_scraper, workers
+        app.logger.info("Worker %d used for web scraping is done.", thread_id)
+        if thread_id == max_workers:
+            web_scraper = None
+            workers = tuple()
+            app.logger.info("Web scraped everything")
+
+    def create_web_scrape_task(thread_id):
+        future = executor.submit(scraper.scrape)
+        future.set_running_or_notify_cancel()
+        future.add_done_callback(lambda future: web_scrape_task_done(future, thread_id))
+        app.logger.info("Launching worker %d for web scraping...", thread_id)
+        return future
+
+    workers = (create_web_scrape_task(thread_id) for thread_id in range(1, max_workers + 1))
+
     return {
         "success": True,
-        "message": "Started web scraping from https://imdb.com..."
-    }
-
-
-@app.route("/api/actors", methods=["POST"])
-def handle_actor_list():
-    all_actors_df = actor_model.get_all_actors_about()
-    all_actors = all_actors_df.to_dict(orient="records")
-    return {
-        "timestamp": datetime.now().isoformat(),
-        "data": all_actors
-    }
-
-
-@app.route("/api/actor/<string:actor_href>", methods=["POST"])
-def handle_actor_req(actor_href):
-    # escape parameter as it could be manipulated by the user
-    esc_actor_href = escape(actor_href)
-
-    # ABOUT
-    about_df = actor_model.get_actor_about(actor_id=esc_actor_href)
-    about = about_df.to_dict(orient="records")[0]
-
-    # AWARDS
-    awards_df = actor_model.get_actor_awards(esc_actor_href)
-    awards = awards_df.to_dict(orient="records")
-
-    movies_df = actor_model.get_actor_movies(actor_id=esc_actor_href)
-    movies_df["mov_year"].fillna(0, inplace=True)
-    movies_df["mov_year"] = movies_df["mov_year"].astype(int)
-
-    # get movies and their genres
-    movie_genres_df = actor_model.get_all_movie_genres(esc_actor_href)
-    movie_genres = movie_genres_df.groupby(["mg_movie_href"])["genre_name"].apply(list)
-
-    def map_genres_to_movie(movie_href):
-        """
-        Associates genres to a given movie.
-
-        :param movie_href: movie-ID
-        :type movie_href: str
-        :return: list of genres associated with the movie
-        """
-        if movie_genres.index.__contains__(movie_href):
-            return movie_genres.at[movie_href]
-        else:
-            return []
-    mapped_genres = map(lambda movie_href: map_genres_to_movie(movie_href=movie_href), movies_df["mov_href"])
-    # add column with all genres for this movie
-    movies_df["genres"] = list(mapped_genres)
-
-
-    # ALL TIME MOVIES
-    all_time_movies = movies_df[["mov_href", "mov_year", "mov_title", "mov_rating", "met_name", "genres"]].sort_values(by=["mov_year"], ascending=False).fillna(0).to_dict(orient="records")
-
-    # RATINGS
-    # get everything required to calculate with rating
-    rating_df = movies_df[["mov_year", "mov_rating"]].copy()
-    # drop movies without a rating
-    rating_df.dropna(inplace=True)
-    mean_overall = rating_df["mov_rating"].mean()
-    top5_movies = movies_df[["mov_href", "mov_year", "mov_title", "mov_rating", "met_name", "genres"]].nlargest(columns=["mov_rating"], n=5).to_dict(orient="records")
-    movie_rating_per_year_df = rating_df.groupby(by=["mov_year"], as_index=False).mean()
-    movie_rating_per_year = movie_rating_per_year_df.to_dict(orient="records")
-
-    genres_df = actor_model.get_actor_genres(actor_id=esc_actor_href)
-    # sort alphabetically and return as list
-    genres = genres_df["genre_name"].sort_values(ascending=True).to_list()
-
-    return {
-        "timestamp": datetime.now().isoformat(),
-        "data": {
-            "about": about,
-            "awards": awards,
-            "allTimeMovies": all_time_movies,
-            "genres": genres,
-            "topFiveMovies": top5_movies,
-            "overallRating": mean_overall,
-            "perYearRating": movie_rating_per_year,
+        "message": "Started web scraping from https://imdb.com...",
+        "progress": {
+            "endpoint": "/api/v1/scrape/progress",
+            "method": "POST",
+            "askAgainInS": 10
         }
     }
+
+
+@app.route("/api/v1/scrape/progress", methods=["POST"])
+def handle_progress():
+    if not web_scraper:
+        return {
+            "success": False,
+            "message": "No webscraper running at the moment"
+        }
+    no_actors = web_scraper.processed_actors.get()
+    progress = no_actors / no_all_actors
+    return {
+        "success": True,
+        "progress": progress
+    }
+
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
     host = "localhost"
-
     app.logger.info("Starting Flask server listening on %s:%s", host, port)
     app.run(host=host, port=port)

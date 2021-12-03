@@ -27,7 +27,7 @@ class Movie:
         """
         return {
             "mov_href": VARCHAR(length=10),
-            "mov_title": VARCHAR(length=80),
+            "mov_title": VARCHAR(length=255),
             "mov_year": SMALLINT(),
             "mov_type": SMALLINT(),
             # two digits, one after the decimal point

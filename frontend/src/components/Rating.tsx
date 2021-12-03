@@ -15,7 +15,7 @@ export function Rating({ rating }: IRating) {
             <Heading size={"md"}>Overall Rating</Heading>
             <HStack alignItems={"baseline"} w={"100%"} justifyContent={"center"}>
                 <Text fontSize={"4xl"} fontWeight={"bold"}>
-                    {rating}
+                    {rating.toFixed(1)}
                 </Text>
                 <Text fontSize={"md"} fontWeight={"light"}>
                     /{maxRating}

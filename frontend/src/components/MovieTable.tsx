@@ -5,12 +5,13 @@ import { IActorMovie } from "../types";
 import { ITable, TableSearchWrapper } from "./TableSearchWrapper";
 
 
-export function MovieTable({ data }: ITable<IActorMovie>) {
+export function MovieTable({ data, maxH }: ITable<IActorMovie>) {
     return (
         <TableSearchWrapper
             searchFunc={searchForStrInMovies}
             data={data}
-            searchPlaceholder="Search movies">
+            searchPlaceholder="Search movies"
+            maxH={maxH}>
             {data => (
                 <Table variant={"simple"}>
                     <Thead>
@@ -37,7 +38,7 @@ export function MovieTable({ data }: ITable<IActorMovie>) {
                                 </Td>
                                 <Td>{mov.mov_year}</Td>
                                 <Td>
-                                    {mov.genres.map((genre, genreIdx) => (
+                                    {mov.mov_genres.map((genre, genreIdx) => (
                                         <Badge
                                             key={`row-${idx}-genre-${genreIdx}`}
                                             colorScheme={"blue"}

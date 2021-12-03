@@ -18,5 +18,5 @@ export const authorDetails = {
 export const baseDomain = "https://imdb.com";
 export const moviePrefix = "/title/";
 export const actorPrefix = "/name/";
-
+export const apiPrefix = "/api/v1"
 export const maxRating = 10; 

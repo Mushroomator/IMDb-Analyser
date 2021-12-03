@@ -1,14 +1,12 @@
 import { VStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { apiPrefix } from "../config";
 import { useFetch } from "../hooks/useFetch";
 import { searchForStrInActorsAbout } from "../searchUtils";
 import { IActorAbout, IActorsResponse } from "../types";
-import ActorCard from "./ActorCard";
-import { SearchBar } from "./SearchBar";
-
-// export interface IActorList {
-
-// }
+import ActorCard from "../components/ActorCard";
+import { LoadingSpinner } from "../components/LoadingSpinner";
+import { SearchBar } from "../components/SearchBar";
 
 export function ActorList() {
     // STATE
@@ -16,7 +14,7 @@ export function ActorList() {
     const [curActors, setCurActors] = useState<Array<IActorAbout>>([])
 
     const { isLoading, error, data: allActors } = useFetch<Array<IActorAbout>, IActorsResponse>(
-        "/api/actors",
+        `${apiPrefix}/actors`,
         [],
         resObj => resObj.data,
         { method: "POST" }
@@ -30,6 +28,8 @@ export function ActorList() {
         }
         search(searchStr);
     }, [searchStr, allActors])
+
+    if(isLoading) return <LoadingSpinner/>
 
     return (
         <VStack

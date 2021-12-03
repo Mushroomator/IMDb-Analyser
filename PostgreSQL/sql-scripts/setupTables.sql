@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS actor (
 */
 CREATE TABLE IF NOT EXISTS award_category  (
 	awc_id SMALLINT PRIMARY KEY NOT NULL,
-    awc_cat_name varchar(50) NOT NULL
+    awc_cat_name varchar(128) NOT NULL
 );
 
 /*
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS award_category  (
 */
 CREATE TABLE IF NOT EXISTS medium_type (
 	met_id smallint PRIMARY KEY NOT NULL,
-	met_name varchar(25) NOT NULL
+	met_name varchar(35) NOT NULL
 );
 
 /*
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS medium_type (
 */
 CREATE TABLE IF NOT EXISTS movie (
 	mov_href varchar(10) PRIMARY KEY NOT NULL,
-	mov_title varchar(80) NOT NULL,
+	mov_title varchar(255) NOT NULL,
 	-- movie might not have been released yet so it can be null
 	mov_year smallint,
 	mov_type smallint NOT NULL,

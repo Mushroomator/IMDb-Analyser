@@ -4,6 +4,7 @@ import { SearchBar } from "./SearchBar";
 
 export interface ITable<T>{
     data: Array<T>
+    maxH?: string
 }
 
 export interface ITableSearchWrapper<T> extends ITable<T> {

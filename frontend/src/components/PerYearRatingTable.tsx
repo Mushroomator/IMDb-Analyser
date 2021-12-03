@@ -31,7 +31,7 @@ export function PerYearRatingTable({ data }: ITable<IPerYearMovieRating>) {
                                 <Td>{rating.mov_year}</Td>
                                 <Td>
                                     <Text display={"inline"} fontSize={"md"} fontWeight={"bold"}>
-                                        {rating.mov_rating}
+                                        {rating.mov_rating.toFixed(1)}
                                     </Text>
                                     /
                                     <Text display={"inline"}>

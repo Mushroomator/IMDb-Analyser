@@ -1,10 +1,11 @@
 import { Grid } from "@chakra-ui/react"
-import { Header } from './Header';
-import { Content } from './Content';
+import { Header } from '../components/Header';
+import { Content } from '../components/Content';
 import { Route, Routes } from 'react-router-dom';
 import { ActorDetails } from './ActorDetails';
 import { ActorList } from './ActorList';
 import { Home } from './Home';
+import { MovieList } from "./MovieList";
 
 function App() {
   return (
@@ -35,7 +36,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="actors" element={<ActorList />} />
           <Route path="/actors/:actorId" element={<ActorDetails />} />
-
+          <Route path="/movies" element={<MovieList/>} />
         </Route>
       </Routes>
     </Grid>

@@ -24,7 +24,7 @@ class AwardCategory:
         """
         return {
             "awc_id": SMALLINT(),
-            "awc_cat_name": VARCHAR(length=50)
+            "awc_cat_name": VARCHAR(length=128)
         }
 
     @staticmethod

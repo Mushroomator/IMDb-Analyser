@@ -24,7 +24,7 @@ class MediumType:
         """
         return {
             "met_id": SMALLINT(),
-            "met_name": VARCHAR(length=25)
+            "met_name": VARCHAR(length=35)
         }
 
     @staticmethod

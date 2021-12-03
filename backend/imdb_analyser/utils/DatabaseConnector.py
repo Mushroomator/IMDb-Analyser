@@ -95,9 +95,10 @@ def insert_into_db_table(df, data_class):
     # insert data in dataframe into specified database table
     logging.info("Inserting into table \"%s\"...", tab_name)
     try:
-        df.to_sql(tab_name, db_engine, db_schema, if_exists="append", method="multi", index=False, dtype=column_config)
+        df.to_sql(tab_name, db_engine, db_schema, if_exists="append", method=None, index=False, dtype=column_config)
     except Exception as exc:
-        logging.warning("Failed to insert %d row(s) into table \"%s\".", df.shape[0], tab_name, exc, exc_info=True)
+        logging.warning("Failed to insert %s row(s) into table \"%s\".", str(df.shape[0]), str(tab_name), exc_info=True)
+        sys.exit(45)
     logging.info("Successfully inserted %d row(s) into table \"%s\"", df.shape[0], tab_name)
 
 

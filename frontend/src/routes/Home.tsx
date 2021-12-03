@@ -2,11 +2,10 @@ import { Avatar, Heading, HStack, Image, SimpleGrid, Text, VStack } from "@chakr
 import eitLogo from "../assets/eit_logo_large_2016.png"
 import othLogo from "../assets/OTH_logo_cut_off.png"
 import { authorDetails } from "../config";
-import { CustomLabel } from "./CustomLabel";
+import { CustomLabel } from "../components/CustomLabel";
 
 export function Home() {
     const fullname = `${authorDetails.firstName} ${authorDetails.lastName}`;
-
 
     return (
         <VStack
@@ -49,17 +48,8 @@ export function Home() {
                 <CustomLabel>Project</CustomLabel>
                 <Text>Project 2: Database of Hollywood Actors and Actresses</Text>
                 <CustomLabel>Date</CustomLabel>
-                <Text>14/01/2022</Text>
+                <Text>10/01/2022</Text>
             </SimpleGrid>
-            {/* <HStack>
-                <Link href="https://imdb.com" isExternal>
-                    <Image
-                        h={"4rem"}
-                        src={imdbLogo}
-                        display={"inline"} />
-                </Link>
-                <Heading fontSize={"2rem"} display={"inline"}>Analyser</Heading>
-            </HStack> */}
             <HStack w={"100%"} justifyContent={"space-evenly"} p={15}>
                 <Image src={eitLogo} w={"30%"} h={"75px"} objectFit={"contain"} />
                 <Image src={othLogo} w={"30%"} h={"75px"} objectFit={"contain"} />

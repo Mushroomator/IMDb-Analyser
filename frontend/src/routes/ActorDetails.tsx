@@ -1,31 +1,26 @@
 import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Heading, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import { mapSexIdentToTxt } from "../config";
+import { apiPrefix, mapSexIdentToTxt } from "../config";
 import { useFetch } from "../hooks/useFetch";
 import { IActorDetails, IActorDetailsResponse } from "../types";
-import { ActorRating } from "./ActorRating";
-import { AwardTable } from "./AwardTable";
-import { MovieTable } from "./MovieTable";
+import { ActorRating } from "../components/ActorRating";
+import { AwardTable } from "../components/AwardTable";
+import { LoadingSpinner } from "../components/LoadingSpinner";
+import { MovieTable } from "../components/MovieTable";
 
 export function ActorDetails() {
+    // Read actor ID from URL path
     const { actorId } = useParams();
-    console.log(actorId)
+
     const { isLoading, error, data: actorDetails } = useFetch<IActorDetails | null, IActorDetailsResponse>(
-        `/api/actor/${actorId}`,
+        `${apiPrefix}/actors/${actorId}`,
         null,
         resObj => resObj.data,
         { method: "POST" }
     )
-    console.log(actorDetails)
-    if (!actorDetails) {
-        return <Box
-            h={"80vh"}
-            alignItems={"center"}
-            justifyContent={"center"}
-            display={"flex"}>
-            <Spinner size={"xl"} color="blue.500" thickness="4px" />
-        </Box>
-    }
+
+    if (!actorDetails) return <LoadingSpinner/>
+
     return (
         <VStack
             bg={"whiteAlpha.900"}
@@ -93,13 +88,13 @@ export function ActorDetails() {
                     <h2>
                         <AccordionButton>
                             <Box flex='1' textAlign='left'>
-                                <Heading size={"sm"} colorScheme={"blackAlpha"}>All Time Movies</Heading>
+                                <Heading size={"sm"} colorScheme={"blackAlpha"}>Movies</Heading>
                             </Box>
                             <AccordionIcon />
                         </AccordionButton>
                     </h2>
                     <AccordionPanel pb={4}>
-                        <MovieTable key={"all-time-movie-table"} data={actorDetails.allTimeMovies}/>
+                        <MovieTable key={"movie-table"} data={actorDetails.allTimeMovies}/>
                     </AccordionPanel>
                 </AccordionItem>
                 <AccordionItem>
@@ -119,3 +114,5 @@ export function ActorDetails() {
         </VStack>
     )
 }
+
+

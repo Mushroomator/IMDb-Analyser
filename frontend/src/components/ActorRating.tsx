@@ -10,7 +10,7 @@ export interface IActorRating {
 
 export function ActorRating({ overallRating, perYearRating }: IActorRating) {
     return (
-        <HStack w={"100%"} h={"250px"}>
+        <HStack w={"100%"} h={["350px", "250px"]} flexDirection={["column", "row"]}>
             <Rating rating={overallRating}/>
             <PerYearRatingTable key={"per-year-movie-rating-table"} data={perYearRating} />
         </HStack>

@@ -1,6 +1,10 @@
+import concurrent.futures
 import logging
 import re
-
+import threading
+from concurrent.futures import ThreadPoolExecutor, FIRST_EXCEPTION
+from multiprocessing import Queue
+from timeit import default_timer as timer
 import numpy as np
 import pandas as pd
 import requests
@@ -16,8 +20,9 @@ from imdb_analyser.data_classes.Movie import Movie
 from imdb_analyser.data_classes.MovieCast import MovieCast
 from imdb_analyser.data_classes.MovieGenre import MovieGenre
 from imdb_analyser.utils import DatabaseConnector
+from imdb_analyser.utils.AtomicInteger import AtomicInteger
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(name)s]  [%(levelname)s] %(message)s')
+logging.basicConfig(filename="test.log", encoding="UTF-8", level=logging.INFO, format='%(asctime)s [%(name)s]  [%(levelname)s] %(message)s')
 
 BASE_DOMAIN = "http://www.imdb.com"
 ACTOR_PAGE_PREFIX = "/name/"
@@ -81,7 +86,14 @@ class WebScraper:
         Note: dictionary is required (instead of a set) as order needs to be preserved (> Python 3.7 required)
         """
         self.medium_types = dict()
-        self.award_types = dict()
+        # self.award_types = dict()
+        self.processed_actors = AtomicInteger(0)
+        """
+        Thread-safe counter for number of actors that have been processed. 
+        """
+        self._lock = threading.Lock()
+        self.max_workers = 50
+        self.executor = ThreadPoolExecutor(max_workers=self.max_workers)
 
     def scrape(self):
         """
@@ -99,7 +111,7 @@ class WebScraper:
         logging.info("Getting all actor details for actors %s...", actor_hrefs)
         actor_details = self.get_all_actors_details(actor_hrefs)
         logging.info("Done. Gathered all actor details.")
-        logging.info("Getting all details for all movies...", self.movie_dict)
+        logging.info("Getting all details for all %d movies...", len(self.movie_dict))
         self.get_all_movies_details()
         logging.info("Done. Got all movie details.")
         logging.info("Inserting gathered data into PostgreSQL database...")
@@ -156,6 +168,41 @@ class WebScraper:
         """
         return actor.to_db_dict()
 
+    def read_from_csv_files(self):
+        self.actor_df = pd.read_csv("data/actor.csv", usecols=Actor.db_columns())
+        self.award_category_df = pd.read_csv("data/award_category.csv", usecols=AwardCategory.db_columns())
+        self.medium_type_df = pd.read_csv("data/medium_type.csv", usecols=MediumType.db_columns())
+        self.movie_df = pd.read_csv("data/movie.csv", usecols=Movie.db_columns())
+        self.award_df = pd.read_csv("data/award.csv", usecols=Award.db_columns())
+        self.genre_df = pd.read_csv("data/genre.csv", usecols=Genre.db_columns())
+        self.movie_genre_df = pd.read_csv("data/movie_genre.csv", usecols=MovieGenre.db_columns())
+        self.movie_cast_df = pd.read_csv("data/movie_cast.csv", usecols=MovieCast.db_columns())
+
+    def write_to_csv_files(self):
+        """
+        Write content of all dataframes to .csv files to be able to skip webscraping when needed.
+
+        :return:
+        """
+        self.actor_df.to_csv("data/actor.csv", columns=Actor.db_columns())
+        self.award_category_df.to_csv("data/award_category.csv", columns=AwardCategory.db_columns())
+        self.medium_type_df.to_csv("data/medium_type.csv", columns=MediumType.db_columns())
+        self.movie_df.to_csv("data/movie.csv", columns=Movie.db_columns())
+        self.award_df.to_csv("data/award.csv", columns=Award.db_columns())
+        self.genre_df.to_csv("data/genre.csv", columns=Genre.db_columns())
+        self.movie_genre_df.to_csv("data/movie_genre.csv", columns=MovieGenre.db_columns())
+        self.movie_cast_df.to_csv("data/movie_cast.csv", columns=MovieCast.db_columns())
+
+    def insert_into_db(self):
+        DatabaseConnector.insert_into_db_table(self.actor_df, Actor)
+        DatabaseConnector.insert_into_db_table(self.award_category_df, AwardCategory)
+        DatabaseConnector.insert_into_db_table(self.medium_type_df, MediumType)
+        DatabaseConnector.insert_into_db_table(self.movie_df, Movie)
+        DatabaseConnector.insert_into_db_table(self.award_df, Award)
+        DatabaseConnector.insert_into_db_table(self.genre_df, Genre)
+        DatabaseConnector.insert_into_db_table(self.movie_genre_df, MovieGenre)
+        DatabaseConnector.insert_into_db_table(self.movie_cast_df, MovieCast)
+
     def put_into_dataframes(self, actor_details):
         """
 
@@ -201,15 +248,10 @@ class WebScraper:
         map_types_to_fk = dict(zip(unq_types, ids))
         self.movie_df["mov_type"] = list(map(lambda movie_type: map_types_to_fk[movie_type], self.movie_df["mov_type"]))
 
-        DatabaseConnector.insert_into_db_table(self.actor_df, Actor)
-        DatabaseConnector.insert_into_db_table(self.award_category_df, AwardCategory)
-        DatabaseConnector.insert_into_db_table(self.medium_type_df, MediumType)
-        DatabaseConnector.insert_into_db_table(self.movie_df, Movie)
-        DatabaseConnector.insert_into_db_table(self.award_df, Award)
+
         self.genre_df = self.genre_df.reset_index()
-        DatabaseConnector.insert_into_db_table(self.genre_df, Genre)
-        DatabaseConnector.insert_into_db_table(self.movie_genre_df, MovieGenre)
-        DatabaseConnector.insert_into_db_table(self.movie_cast_df, MovieCast)
+        self.write_to_csv_files()
+        self.insert_into_db()
 
         logging.info("Insertion into actor table is done")
 
@@ -422,7 +464,7 @@ class WebScraper:
         :return: "M" for male, "F" for female
         """
         jobs = actor_page.find(id="name-job-categories")
-        # check wether a link with href to acto exists if yes -> male, else female
+        # check wether a link with href to actor exists if yes -> male, else female
         # As the list only has actors and actresses it must be either of the two
         actor = jobs.find("a", attrs={"href": "#actor"})
         if not actor:
@@ -431,7 +473,7 @@ class WebScraper:
             sex = "M"
         return sex
 
-    def get_actor_details(self, actor_href):
+    def get_actor_details(self, actor_href, count):
         """Get all details to an actor/ actress.
 
         :param actor_href: href to an actor/ actress
@@ -439,7 +481,7 @@ class WebScraper:
         :return: an actor/ actress with their details
         """
         actor_url = BASE_DOMAIN + ACTOR_PAGE_PREFIX + actor_href
-        logging.info("Getting details for actor from %s...", actor_url)
+        logging.info("Getting details for actor %s from %s...", actor_href, actor_url)
         actor_page = requests.get(actor_url, headers=REQ_HEADERS)
         parsed_actor_page = BeautifulSoup(actor_page.text, "html.parser")
         # Get fullname
@@ -451,8 +493,9 @@ class WebScraper:
         img = self.get_actor_img(parsed_actor_page)
         # Get movies
         movies = self.get_actor_movies(parsed_actor_page)
-        # Merge movie dicts so movies will not be fetched twice
-        self.movie_dict = self.movie_dict | movies
+        # Merge movie dicts so movies will not be fetched twice (use lock to gurantee this operation is thread-safe)
+        with self._lock:
+            self.movie_dict = self.movie_dict | movies
         # Get awards
         awards = self.get_actor_awards(actor_href)
         # Create a new actor object for an actor/ actress with all their details
@@ -467,15 +510,21 @@ class WebScraper:
 
         :return:
         """
-        counter = 0
-        for href, movie in self.movie_dict.items():
+
+        no_movies = len(self.movie_dict)
+        def process_movie(href, movie, count):
             url = BASE_DOMAIN + MOVIE_PAGE_PREFIX + href
-            logging.info("Getting movie details for movie %s", url)
+            logging.info("(%d/%d) Getting movie details for movie %s", count + 1, no_movies, url)
             self.get_movie_details(href, movie)
-            logging.info("Got details for movie %s:\n%s", url, movie)
-            counter += 1
-            if counter == 4:
-                break
+            logging.info("(%d/%d) Got details for movie %s:\n%s", count + 1, no_movies, url, movie)
+
+        start = timer()
+        workers = [self.executor.submit(process_movie, href, movie, count) for count, (href, movie) in enumerate(self.movie_dict.items())]
+        end = timer()
+        done_tasks, pending_tasks = concurrent.futures.wait(workers, return_when=FIRST_EXCEPTION)
+        logging.info("Workers done: Tasks completed: %d\tTasks pending: %s", len(done_tasks), len(pending_tasks))
+        elapsed = end - start
+        logging.info("Gathered all movie data in %smin %ssec", str(elapsed // 60), str(elapsed % 60))
 
     def get_movie_details(self, movie_href, movie):
         """Get all details for a specific movie.
@@ -497,17 +546,22 @@ class WebScraper:
             rating = float(rating_span.get_text())
         # genres are in within a div with has the "data-testid" value set to "genres"
         genre_div = parsed_movie_page.find("div", attrs={"data-testid": "genres"})
-        # actual genre names are in spans with "ipc-chip__text" class
-        genre_spans = genre_div.find_all("span", class_="ipc-chip__text")
         genres = set()
-        for genre in genre_spans:
-            gtxt = genre.get_text()
-            genres.add(gtxt)
-            self.all_genres[gtxt] = None
+
+        if genre_div:
+            # actual genre names are in spans with "ipc-chip__text" class
+            genre_spans = genre_div.find_all("span", class_="ipc-chip__text")
+
+            for genre in genre_spans:
+                gtxt = genre.get_text()
+                genres.add(gtxt)
+                self.all_genres[gtxt] = None
 
         # add missing information to movie instances
         movie.genres = genres
         movie.rating = rating
+
+
 
     def get_all_actors_details(self, actor_hrefs):
         """Get all details to all actors.
@@ -516,15 +570,30 @@ class WebScraper:
         :type actor_hrefs: list[str]
         :return: list of actors/ actresses with their details
         """
-        actors = []
-        for href in actor_hrefs:
-            logging.info("Getting all Current actor: %s", href)
-            actor_detail = self.get_actor_details(href)
-            actors.append(actor_detail)
-            break
 
-        return actors
+        actor_queue = list()
+        list_lock = threading.Lock()
 
+        def process_actor(href, count, total_count):
+            logging.info("(%d/%d) Current actor: %s", count, total_count, href)
+            actor_detail = scraper.get_actor_details(href, count)
+            with list_lock:
+                actor_queue.append(actor_detail)
+            scraper.processed_actors.add_and_get(1)
 
-# scraper = WebScraper()
+        total_count = len(actor_hrefs)
+        start = timer()
+        workers = [self.executor.submit(process_actor, href, count + 1, total_count) for count, href in enumerate(actor_hrefs)]
+        done_tasks, pending_tasks = concurrent.futures.wait(workers, return_when=FIRST_EXCEPTION)
+        end = timer()
+        logging.info("Workers done: Tasks completed: %d\tTasks pending: %s", len(done_tasks), len(pending_tasks))
+        elapsed = end - start
+        logging.info("Gathered all actor data in %smin %ssec", str(elapsed // 60), str(elapsed % 60))
+        return actor_queue
+
+scraper = WebScraper()
 # scraper.scrape()
+
+scraper.read_from_csv_files()
+scraper.insert_into_db()
+

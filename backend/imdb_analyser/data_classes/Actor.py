@@ -76,3 +76,6 @@ class Actor(DataClass):
 
     def __repr__(self):
         return f'{type(self).__name__}({", ".join(f"{str(member[0])}={str(member[1])}" for member in vars(self).items())})'
+
+    def __getnewargs__(self):
+        return ()

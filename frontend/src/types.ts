@@ -18,7 +18,7 @@ export interface IActorAbout {
  * All information about a movie
  */
 export interface IActorMovie {
-    genres: Array<string>
+    mov_genres: Array<string>
     met_name: string
     mov_href: string
     mov_rating: number
@@ -66,6 +66,13 @@ export interface IActorDetailsResponse {
     timestamp: string
     data: IActorDetails
 }
+
+export interface IMovieResponse {
+    timestamp: string
+    data: Array<IActorMovie>
+}
+
+
 
 /**
  * Details for an actor/ actress

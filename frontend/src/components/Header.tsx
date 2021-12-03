@@ -16,7 +16,7 @@ export function Header() {
                         `"left middle right"`
                     ]}
                 gridTemplateRows={"100%"}
-                gridTemplateColumns={"20% 60% 20%"}
+                gridTemplateColumns={["60px 1fr 130px", null, null, "300px 1fr 150px"]}
             >
                 <GridItem
                     gridArea={"left"}
@@ -34,7 +34,7 @@ export function Header() {
                     alignItems={"center"}
                     justifyContent={"center"}>
                     <HStack
-                        spacing={"5"}
+                        spacing={[0, null, 5]}
                         h={"100%"}
                         w={"100%"}
                         justifyItems={"start"}
