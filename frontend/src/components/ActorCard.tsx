@@ -8,7 +8,7 @@ import { IActorAbout } from "../types";
  * @param props Information about an actor 
  * @returns 
  */
-export default function ActorCard({ act_href, act_fullname, act_sex, act_img_url, act_bio }: IActorAbout) {
+export default function ActorCard({ act_href, act_rank, act_fullname, act_sex, act_img_url, act_bio }: IActorAbout) {
 
     return (
         <Grid
@@ -50,7 +50,7 @@ export default function ActorCard({ act_href, act_fullname, act_sex, act_img_url
                 pl={2}>
                 <VStack h={"100%"} alignItems={"start"} alignContent={"space-around"} p={[2, 4]}>
                     <Heading fontSize={["md", "lg", "xl", "2xl"]}>{act_fullname}</Heading>
-                    <Text fontSize={"sm"} fontWeight={"light"}>{mapSexIdentToTxt[act_sex]}</Text>
+                    <Text fontSize={"sm"} fontWeight={"light"}>{`Rank ${act_rank}\t|\t${mapSexIdentToTxt[act_sex]}`}</Text>
                     <Text display={"none"} w={"100%"} fontSize={["sm", "md"]} noOfLines={2}>{act_bio}</Text>
                 </VStack>
             </GridItem>

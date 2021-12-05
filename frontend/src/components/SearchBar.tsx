@@ -11,7 +11,6 @@ export interface ISearchBar {
 
 
 export function SearchBar({ searchStr, setSearchStr, placeholder, inputOptions, withImg = true }: ISearchBar) {
-
     return (
         <InputGroup>
             {withImg &&

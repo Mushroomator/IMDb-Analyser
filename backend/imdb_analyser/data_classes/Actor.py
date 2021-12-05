@@ -1,4 +1,4 @@
-from sqlalchemy import VARCHAR, BOOLEAN, TEXT, CHAR
+from sqlalchemy import VARCHAR, BOOLEAN, TEXT, CHAR, SMALLINT
 
 from imdb_analyser.data_classes.DataClass import DataClass
 
@@ -26,6 +26,7 @@ class Actor(DataClass):
         """
         return {
             "act_href": VARCHAR(length=10),
+            "act_rank": SMALLINT(),
             "act_fullname": VARCHAR(length=50),
             "act_sex": CHAR(length=1),
             "act_img_url": VARCHAR(length=255),
@@ -50,8 +51,9 @@ class Actor(DataClass):
         """
         return list(Actor.db_column_config().values())
 
-    def __init__(self, actor_href, fullname, sex, img, bio, movies, awards):
+    def __init__(self, actor_href, rank, fullname, sex, img, bio, movies, awards):
         self.actor_href = actor_href
+        self.rank = int(rank)
         self.fullname = str(fullname)
         self.sex = str(sex)
         self.img = str(img)

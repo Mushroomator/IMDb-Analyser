@@ -96,10 +96,12 @@ def insert_into_db_table(df, data_class):
     logging.info("Inserting into table \"%s\"...", tab_name)
     try:
         df.to_sql(tab_name, db_engine, db_schema, if_exists="append", method=None, index=False, dtype=column_config)
+        logging.info("Successfully inserted %d row(s) into table \"%s\"", df.shape[0], tab_name)
+        return True
     except Exception as exc:
         logging.warning("Failed to insert %s row(s) into table \"%s\".", str(df.shape[0]), str(tab_name), exc_info=True)
-        sys.exit(45)
-    logging.info("Successfully inserted %d row(s) into table \"%s\"", df.shape[0], tab_name)
+        return False
+
 
 
 db_host, db_port, db_user, db_database, db_password = read_db_config()

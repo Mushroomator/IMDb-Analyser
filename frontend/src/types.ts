@@ -8,6 +8,7 @@ export type TActSex = "M" | "F" | "D";
  */
 export interface IActorAbout {
     act_bio: string
+    act_rank: number
     act_fullname: string
     act_href: string
     act_img_url: string
@@ -72,6 +73,32 @@ export interface IMovieResponse {
     data: Array<IActorMovie>
 }
 
+export interface ITriggerWebscrapingResponse {
+    success: boolean
+    message: string
+    monitorProgressVia: {
+        endpoint: string
+        method: string
+        intervalInS: number
+    }
+}
+
+export interface IDeleteAllResponse {
+    success: boolean
+    message: string
+}
+
+export type TWebScrapingStatus = "idle" | "running" | "finished";
+
+export interface IWebscrapingProgressResponse {
+    status: TWebScrapingStatus
+    progress: number
+}
+
+export interface IError {
+    title: string
+    desc: string
+} 
 
 
 /**

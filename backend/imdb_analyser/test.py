@@ -1,4 +1,3 @@
-import pandas as pd
+from imdb_analyser.model import other_model
 
-test = pd.DataFrame({"a": ["dsfdfsd"], "b": [8970342]})
-test.to_csv("../data/test.csv")
+other_model.get_last_webscraping_time()

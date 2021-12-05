@@ -28,7 +28,7 @@ export function PerYearRatingTable({ data }: ITable<IPerYearMovieRating>) {
                                     bg: "var(--chakra-colors-gray-100)"
                                 }}>
 
-                                <Td>{rating.mov_year}</Td>
+                                <Td>{rating.mov_year === 0 ? "No year": rating.mov_year}</Td>
                                 <Td>
                                     <Text display={"inline"} fontSize={"md"} fontWeight={"bold"}>
                                         {rating.mov_rating.toFixed(1)}

@@ -6,12 +6,12 @@ import { IActorDetails, IActorDetailsResponse } from "../types";
 import { ActorRating } from "../components/ActorRating";
 import { AwardTable } from "../components/AwardTable";
 import { LoadingSpinner } from "../components/LoadingSpinner";
-import { MovieTable } from "../components/MovieTable";
+import { SearchableMovieTable } from "../components/SearchableMovieTable";
+import { CustomAlert } from "../components/CustomAlert";
 
 export function ActorDetails() {
     // Read actor ID from URL path
     const { actorId } = useParams();
-
     const { isLoading, error, data: actorDetails } = useFetch<IActorDetails | null, IActorDetailsResponse>(
         `${apiPrefix}/actors/${actorId}`,
         null,
@@ -19,7 +19,16 @@ export function ActorDetails() {
         { method: "POST" }
     )
 
-    if (!actorDetails) return <LoadingSpinner/>
+    if (error) return <CustomAlert status="error" alertTitle={error.title} alertDesc={error.desc} />
+    if (isLoading) return <LoadingSpinner />
+    if (!actorDetails || Object.keys(actorDetails).length === 0) {
+        return (
+            <CustomAlert
+                status="info"
+                alertTitle="No data"
+                alertDesc={`You might need to trigger webscraping using the button on the top right first or there is no actor with the given ID (=${actorId})!`} />
+        )
+    }
 
     return (
         <VStack
@@ -29,6 +38,10 @@ export function ActorDetails() {
             p={8}
             w={"100%"}>
             <Avatar
+                onClick={() => window.open(actorDetails.about.act_img_url, "_blank")?.focus()}
+                _hover={{
+                    cursor: "pointer"
+                }}
                 bg={"blue.500"}
                 fontWeight={"bold"}
                 fontSize={"5xl"}
@@ -42,6 +55,7 @@ export function ActorDetails() {
                 showBorder={true}
                 borderColor={"blue.500"} />
             <Heading>{actorDetails.about.act_fullname}</Heading>
+            <Heading size={"sm"}>{`Rank ${actorDetails.about.act_rank}`}</Heading>
             <Text pb={8} fontSize={"sm"}>{mapSexIdentToTxt[actorDetails.about.act_sex]}</Text>
 
             <Accordion w={"100%"} defaultIndex={[0]} allowMultiple>
@@ -68,7 +82,7 @@ export function ActorDetails() {
                         </AccordionButton>
                     </h2>
                     <AccordionPanel pb={4} w={"100%"}>
-                        <MovieTable key={"top5-movie-table"} data={actorDetails.topFiveMovies}/>
+                        <SearchableMovieTable key={"top5-movie-table"} data={actorDetails.topFiveMovies} maxH="100%"/>
                     </AccordionPanel>
                 </AccordionItem>
                 <AccordionItem>
@@ -94,7 +108,7 @@ export function ActorDetails() {
                         </AccordionButton>
                     </h2>
                     <AccordionPanel pb={4}>
-                        <MovieTable key={"movie-table"} data={actorDetails.allTimeMovies}/>
+                        <SearchableMovieTable key={"movie-table"} data={actorDetails.allTimeMovies}/>
                     </AccordionPanel>
                 </AccordionItem>
                 <AccordionItem>

@@ -8,6 +8,7 @@ def get_all_actors_about():
     """
     query = """
         SELECT act_href,
+               act_rank,
     	       act_fullname,
     	       act_sex,
     	       act_img_url,
@@ -27,6 +28,7 @@ def get_actor_about(actor_id):
     """
     query="""
     SELECT act_href,
+           act_rank,
 	       act_fullname,
 	       act_sex,
 	       act_img_url,

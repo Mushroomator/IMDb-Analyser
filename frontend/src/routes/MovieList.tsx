@@ -1,4 +1,5 @@
-import { Box, Heading, HStack, VStack } from "@chakra-ui/react";
+import { Heading, VStack } from "@chakra-ui/react";
+import { CustomAlert } from "../components/CustomAlert";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { MovieTable } from "../components/MovieTable";
 import { apiPrefix } from "../config";
@@ -13,7 +14,16 @@ export function MovieList() {
         { method: "POST" }
     )
 
+    if (error) return <CustomAlert status="error" alertTitle={"test"} alertDesc={"test"} />
     if (isLoading) return <LoadingSpinner />
+    if (allActors.length === 0) {
+        return (
+            <CustomAlert
+                status="info"
+                alertTitle="No data"
+                alertDesc="You might need to trigger webscraping using the button on the top right first!" />
+        )
+    }
 
     return (
         <VStack
@@ -25,7 +35,7 @@ export function MovieList() {
             p={8}
         >
             <Heading pb={8}>List of all movies</Heading>
-            <MovieTable data={allActors} maxH="72vh"/>
+            <MovieTable data={allActors} maxH="72vh" />
         </VStack>
     )
 }

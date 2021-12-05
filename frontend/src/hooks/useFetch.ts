@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { IError } from "../types";
 
 export function useFetch<DataType, ResponseType>(
     input: RequestInfo,
@@ -8,7 +9,7 @@ export function useFetch<DataType, ResponseType>(
 
     const [data, setData] = useState<DataType>(initialState);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<null | Error>(null);
+    const [error, setError] = useState<null | IError>(null);
     const [run, setRun] = useState<boolean>(true);
     const timeoutInMs = useRef<number>(1000);
     const maxTimeout = useRef<number>(30000);
@@ -18,18 +19,29 @@ export function useFetch<DataType, ResponseType>(
     * not on every re-render due to state changes
     */
     const fetchData = useCallback(() => {
-        if(run){
-            console.log("Updating useCallback function")
+        if (run) {
             fetch(input, init)
                 .then(async res => {
-                    const parsed: ResponseType = await res.json().catch(err => console.log(err));
-                    setData(transformReq2Data(parsed));
-                    setIsLoading(false);
+                    if(res.status !== 200){
+                        setError({
+                            title: "No successful connection",
+                            desc: `Failed to fetch data from backend! Status code: ${res.status}`
+                        })
+                    } else {
+                        try {
+                            const parsed: ResponseType = await res.json()
+                            setData(transformReq2Data(parsed));
+                            setIsLoading(false);
+                        }
+                        catch (err) {
+                            console.log(err)
+                        }
+                    }
                 })
                 .catch(err => {
                     let newTimeout = timeoutInMs.current * 2;
-                    if(newTimeout > maxTimeout.current) newTimeout = maxTimeout.current;
-                    timeoutInMs.current = newTimeout; 
+                    if (newTimeout > maxTimeout.current) newTimeout = maxTimeout.current;
+                    timeoutInMs.current = newTimeout;
                     setError(err)
                     setTimeout(() => setRun(true), timeoutInMs.current)
                 });
@@ -41,7 +53,6 @@ export function useFetch<DataType, ResponseType>(
      * Get all actors from the api
      */
     useEffect(() => {
-        console.log("Running use effect fetch data")
         fetchData()
     }, [fetchData]);
 

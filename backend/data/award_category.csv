@@ -1,494 +1,494 @@
 ,awc_id,awc_cat_name
-0,0,Primetime Emmy
-1,1,AACTA Award
-2,2,Trailblazer Award
-3,3,ADG Award
-4,4,AFCA Award
-5,5,AFI International Award
-6,6,AFI Award
-7,7,COFCA Award
-8,8,Family Television Award
-9,9,FCCA Award
-10,10,Robert Altman Award
-11,11,Golden Globe
-12,12,Gotham Independent Film Award
-13,13,Logie
-14,14,People's Choice Award
-15,15,PFCS Award
-16,16,Prism Award
-17,17,Actor
-18,18,Futurewave Youth Jury Award
-19,19,Star on the Walk of Fame
-20,20,Movies for Grownups Award
-21,21,ACCA
-22,22,Blockbuster Entertainment Award
-23,23,Bravo Otto Germany
-24,24,Joel Siegel Award
-25,25,Critics Choice Award
-26,26,CableACE
-27,27,Career Achievement Award
-28,28,David
-29,29,Jury Prize
-30,30,Gold Derby Award
-31,31,Golden Camera
-32,32,Man of the Year
-33,33,Lifetime Achievement Award
-34,34,Hollywood Film Award
-35,35,Silver Ribbon
-36,36,Special Prize for Outstanding Contribution to World Cinema
-37,37,Freedom of Expression Award
-38,38,OFTA Film Award
-39,39,Chairman's Award
-40,40,Razzie Award
-41,41,Golden Marc'Aurelio Acting Award
-42,42,Golden Aries
-43,43,Donostia Lifetime Achievement Award
-44,44,Satellite Award
-45,45,Golden Satellite Award
-46,46,ShoWest Award
-47,47,Teen Choice Award
-48,48,Stinker Award
-49,49,Yoga Award
-50,50,Golden Icon Award
-51,51,Hollywood Award
-52,52,Black Reel
-53,53,CinemaCon Award
-54,54,DFCS Award
-55,55,Chainsaw Award
-56,56,Huading Award
-57,57,Image Award
-58,58,MTV Movie Award
-59,59,NAVGTR Award
-60,60,NFCS Award
-61,61,Georges Award
-62,62,VGA
-63,63,Grand Jury Prize
-64,64,Saturn Award
-65,65,EDA Special Mention Award
-66,66,American Comedy Award
-67,67,Annie
-68,68,Bambi
-69,69,CFCA Award
-70,70,Audience Award
-71,71,Icon Award
-72,72,Film and Literature Award
-73,73,Independent Spirit Award
-74,74,François Truffaut Award
-75,75,Golden Apple
-76,76,Woman of the Year
-77,77,Blimp Award
-78,78,Leopard Club Award
-79,79,Crystal Award
-80,80,Oscar
-81,81,BAFTA Film Award
-82,82,BSFC Award
-83,83,DFWFCA Award
-84,84,Empire Award
-85,85,EFA People's Choice Award
-86,86,Evening Standard British Film Award
-87,87,Golden Schmoes
-88,88,HCA TV Award
-89,89,INOCA
-90,90,Irina Palm
-91,91,IOMA
-92,92,National Film Award
-93,93,NRJ Ciné Award
-94,94,OFCS Award
-95,95,UFCA Award
-96,96,WIN Award
-97,97,BTVA Feature Film Voice Acting Award
-98,98,Camie
-99,99,Gold Derby TV Award
-100,100,OFTA Television Award
-101,101,SLFCA Award
-102,102,Young Artist Award
-103,103,Academy Fellowship
-104,104,Life Achievement Award
-105,105,Christopher Award
-106,106,CinEuphoria
-107,107,Special David
-108,108,Gala Tribute
-109,109,Film Award in Gold
-110,110,Cecil B. DeMille Award
-111,111,Henrietta Award
-112,112,Jupiter Award
-113,113,KCFCC Award
-114,114,Golden Laurel
-115,115,ALFS Award
-116,116,LAFCA Award
-117,117,NBR Award
-118,118,NSFC Award
-119,119,NYFCC Award
-120,120,OFTA Film Hall of Fame
-121,121,Commander of the Order of Arts and Letters
-122,122,Special Award
-123,123,Telegatto
-124,124,Kennedy Center Honors
-125,125,Felix
-126,126,British Independent Film Award
-127,127,Chlotrudis Award
-128,128,Golden Train Award
-129,129,IF Award
-130,130,Sierra Award
-131,131,Silver Logie
-132,132,Feature Film Award
-133,133,SDFCS Award
-134,134,Jury Award
-135,135,Individual Award
-136,136,Gold Panda
-137,137,National Film and Television Award
-138,138,Scream Award
-139,139,Action Movie Star of the Year
-140,140,Cinescape Genre Face of the Future Award
-141,141,Humanitarian Award
-142,142,DVDX Award
-143,143,Hollywood Breakthrough Award
-144,144,Best Actor
-145,145,National Movie Award
-146,146,ACCA TV
-147,147,Critics' Choice TV Award
-148,148,FFCC Award
-149,149,IGN Award
-150,150,ICS Award
-151,151,Special Achievement Award
-152,152,Seattle Film Critics Award
-153,153,TFCA Award
-154,154,VFCC Award
-155,155,SFX Award
-156,156,AACTA International Award
-157,157,Audience Choice Award
-158,158,Australian Star of the Year
-159,159,DFCC
-160,160,Golden Carp Film Award - International
-161,161,Dorian Award
-162,162,Grammy
-163,163,Midseason Award
-164,164,HFCS Award
-165,165,IGN People's Choice Award
-166,166,IFJA Award
-167,167,INOCA TV
-168,168,Grace Award
-169,169,MTV Movie + TV Award
-170,170,Short Film Award
-171,171,NTFCA Award
-172,172,Odyssey Award
-173,173,Kirk Douglas Award for Excellence in Film
-174,174,WAFCA Award
-175,175,Jean Hersholt Humanitarian Award
-176,176,BAFTA Children's Award
-177,177,AAFCA Award
-178,178,EDA Female Focus Award
-179,179,Board of the Governors Award
-180,180,BTVA People's Choice Voice Acting Award
-181,181,Silver Berlin Bear
-182,182,Cinema for Peace Award
-183,183,Truly Moving Picture Award
-184,184,Actress of the Year
-185,185,IOFCP Award
-186,186,Grand Jury Award
-187,187,FIPRESCI Prize
-188,188,Stanley Kramer Award
-189,189,Rembrandt Award
-190,190,Outstanding Performer of the Year Award
-191,191,Heart of Sarajevo
-192,192,Courage in Filmmaking Award
-193,193,WFCC Award
-194,194,Acting and Activism Award
-195,195,EDA Award
-196,196,Britannia Award
-197,197,BTVA Special/DVD Voice Acting Award
-198,198,CIC Award
-199,199,President's Award
-200,200,CCA Super Award
-201,201,Días de Cine Award
-202,202,GAFCA Award
-203,203,HCA Award
-204,204,Actor of the Year
-205,205,IDA Award
-206,206,Video Source Award
-207,207,IFC Award
-208,208,LEJA Award
-209,209,LAOFCS Award
-210,210,Museum of Modern Art Film Benefit Honoree
-211,211,NCFCA Award
-212,212,NDFS Award
-213,213,PGA Award
-214,214,Lifetime Achievement Award in Television
-215,215,Vision Award
-216,216,PCC Award
-217,217,Showmanship Award
-218,218,SFFCC Award
-219,219,SFCS Award
-220,220,SEFCA Award
-221,221,Streamy Award
-222,222,TV Land Award
-223,223,VVFP Award
-224,224,Bronze Wrangler
-225,225,Golden Wave
-226,226,Variety Award
-227,227,European Film Award
-228,228,Halfway Award
-229,229,NYFCO Award
-230,230,Ensemble Cast Award
-231,231,VES Award
-232,232,BAFTA TV Award
-233,233,Honorary Golden Berlin Bear
-234,234,British LGBT Award
-235,235,Maverick Tribute Award
-236,236,Clarence Derwent Award
-237,237,DVD Premiere Award
-238,238,Timeless Award
-239,239,Genie
-240,240,Stephen F. Kolzak Award
-241,241,Outfest Achievement Award
-242,242,RTS Television Award
-243,243,Silver Seashell
-244,244,Golden Space Needle Award
-245,245,Critics Award
-246,246,Queerty
-247,247,ALMA Award
-248,248,Imagen Award
-249,249,Wannabe Award
-250,250,American Film Award
-251,251,BOFCA Award
-252,252,Daytime Emmy
-253,253,Tribute Award
-254,254,ICP Award
-255,255,Excellence Award
-256,256,OFCC Award
-257,257,Sant Jordi
-258,258,Auteur Award
-259,259,STFC Award
-260,260,Street Award
-261,261,Tokyo Grand Prix
-262,262,Global Achievement Award
-263,263,IFTA Award
-264,264,David Lean Award for Direction
-265,265,Capri Director Award
-266,266,Capri Movie of the Year Award
-267,267,CEC Award
-268,268,DGA Award
-269,269,Golden Eagle
-270,270,Grand Prix
-271,271,Outstanding Contribution to World Cinema
-272,272,Foreign Award
-273,273,Redeemer Award
-274,274,Golden Slate
-275,275,Taurus Honorary Award
-276,276,Film Excellence Award
-277,277,BFS Award
-278,278,Truer Than Fiction Award
-279,279,Golden Camera for Lifetime Achievement
-280,280,GWNYFCA Award
-281,281,MCFCA Award
-282,282,NMFC Award
-283,283,SFBAFCC Award
-284,284,Prize San Sebastián
-285,285,TCA Award
-286,286,Queer Lion
-287,287,Jaeger-LeCoultre Glory to the Filmmaker Award
-288,288,Career Golden Lion
-289,289,Festival Prize
-290,290,Palme d'Or
-291,291,Marquee Award
-292,292,Fotogramas de Plata
-293,293,Stanislavsky Prize
-294,294,Silver Medallion Award
-295,295,All Def Movie Award
-296,296,Joseph Plateau Award of Honour
-297,297,Lone Star Film & Television Award
-298,298,Career Exellence Award
-299,299,MTV Generation Award
-300,300,Desert Palm Achievement Award
-301,301,American Riviera Award
-302,302,Virginia Film Award
-303,303,Invisible Woman Award
-304,304,Rising Star Award
-305,305,C21's International Drama Award
-306,306,Dagger
-307,307,Emmy
-308,308,World Artist Award
-309,309,FilmInk Award
-310,310,MTV TRL Award
-311,311,Golden Eye for Lifetime Achievement
-312,312,Anthony Quinn Award for Achievement in Motion Pictures
-313,313,ASECAN Award
-314,314,Antoñita Colomé Award
-315,315,Label Europa Cinemas
-316,316,Palmarés blogos de oro
-317,317,Golden India Catalina
-318,318,Outstanding European Achievement in World Cinema
-319,319,Feroz Award
-320,320,Vanguard Award
-321,321,Goya
-322,322,Honorary Goya
-323,323,Lasting Image Award
-324,324,ICS Cannes Award
-325,325,Ischia Actor Award
-326,326,José María Forqué Award
-327,327,Festival President's Award
-328,328,Festival Award
-329,329,CineMerit Award
-330,330,Francisco Rabal Award
-331,331,Málaga Lifetime Achievement Award
-332,332,NCLR Bravo Award
-333,333,International Star Award
-334,334,Premio ACE
-335,335,Honorary Grand Prize
-336,336,Award of the Spanish Actors Union
-337,337,Taormina Arte Award
-338,338,Platino Award
-339,339,Honorary Award
-340,340,Golden Lion
-341,341,Distinguished Achievement in Performing Arts
-342,342,Will Rogers Motion Picture Pioneers Award
-343,343,Legend Award
-344,344,EMMA
-345,345,Special Silver Ribbon
-346,346,Peabody Award
-347,347,Nova Award
-348,348,Krzysztof Kieslowski Award
-349,349,Half-Life Award
-350,350,Spotlight Award
-351,351,Leo
-352,352,Spirit of Independence Award
-353,353,Best Actress
-354,354,OAFFC Award
-355,355,Indie Impact Award
-356,356,Chairman's Vanguard Award
-357,357,Courage in Acting Award
-358,358,Charlie Chaplin Icon Award
-359,359,Grand Special Prize
-360,360,Fright Meter Award
-361,361,Barrymore Award
-362,362,German Independence Honorary Award
-363,363,Star of Excellence
-364,364,Peter J. Owens Award
-365,365,Tribute to Independent Vision Award
-366,366,Black Film Award
-367,367,BET Award
-368,368,BFCC Award
-369,369,Black Movie Award
-370,370,Freedom Award
-371,371,CIFCC Award
-372,372,Entertainer of the Year Award
-373,373,Best of the Fest
-374,374,Modern Master Award
-375,375,The BAM Award
-376,376,BAFTA Games Award
-377,377,Golden Nymph
-378,378,Sonny Bono Visionary Award
-379,379,Webby Award
-380,380,TV Guide Award
-381,381,Role Model Award
-382,382,Kids' Choice Award
-383,383,Screen Idol Award
-384,384,Special Jury Prize
-385,385,Vice/Martin Award
-386,386,Special Volpi Cup
-387,387,Dynamic Duo Award
-388,388,Special Honorary Award
-389,389,BloodGuts UK Horror Award
-390,390,Gertrudis Award
-391,391,Cinema Bloggers Award
-392,392,Honorary César
-393,393,New Generation Award
-394,394,Premiere New Power Award
-395,395,Upstream Prize
-396,396,World Soundtrack Award
-397,397,YoungStar Award
-398,398,Davis Award
-399,399,Guardian Film Award
-400,400,Special Citation
-401,401,PFCC Award
-402,402,Life Career Award
-403,403,Almería Tierra de Cine Award
-404,404,Video Premiere Award
-405,405,Action Hero Award
-406,406,Hall of Fame
-407,407,ACE
-408,408,Sour Apple
-409,409,Distinguished Artisan Award
-410,410,Honorable Mention
-411,411,Nexty
-412,412,Fondazione Mimmo Rotella Special Award
-413,413,American Music Award
-414,414,ASCAP Award
-415,415,BET Comedy Award
-416,416,Pioneering Spirit Award
-417,417,MTV Europe Music Award
-418,418,VMA
-419,419,Creative Impact in Acting Award
-420,420,Universe Reader's Choice Award
-421,421,Soul Train Award
-422,422,Gold Creator Award
-423,423,CCOP
-424,424,Big Green Help Award
-425,425,New Media Film Festival Award
-426,426,Cinema Vanguard Award
-427,427,Platinum Award
-428,428,Just Kidding Award
-429,429,Harper's Bazaar Award
-430,430,Dilys Powell Award
-431,431,Film Award
-432,432,Golden Capital
-433,433,Montecito Award
-434,434,Tribute Actor Award
-435,435,Elvira Notari Prize
-436,436,Humanitas Prize
-437,437,WGA Award (Screen)
-438,438,Canadian Screen Award
-439,439,Best Supporting Actor
-440,440,Capri Actor Award
-441,441,Capri Legend Award
-442,442,Guinness World Record
-443,443,Achievement in Acting
-444,444,Legend of Cinema Award
-445,445,Outstanding Work in Cinema Award
-446,446,Bodil
-447,447,70th Anniversary Prize
-448,448,Capri Supporting Actress Award
-449,449,Cinema for Peace Honorary Award
-450,450,GQ Award
-451,451,Truly Moving Sound Award
-452,452,Mill Valley Film Festival Award
-453,453,Gala Tribute Award
-454,454,Magnolia Award
-455,455,SFC Award
-456,456,Genre Award
-457,457,BEFTTA Award
-458,458,Golden Berlin Bear
-459,459,Capri Ensemble Cast Award
-460,460,Excellence in Media Award
-461,461,MINY
-462,462,Honorary Prize
-463,463,Muse Award
-464,464,Honorary Heart of Sarajevo
-465,465,Golden Phoenix
-466,466,AFCC Award
-467,467,IFCS Award
-468,468,Lifetime Achievement Award in Motion Pictures
-469,469,Visionary Award
-470,470,Volpi Cup
-471,471,Bob Hope Humanitarian Award
-472,472,Best Director
-473,473,Filmmaker Award
-474,474,Screen International Award
-475,475,OFTA TV Hall of Fame
-476,476,Literary Award
-477,477,White Elephant
-478,478,VDKUF Award
-479,479,Fondazione Mimmo Rotella Award
-480,480,Brian Award
-481,481,Golden Osella
-482,482,Pasinetti Award
-483,483,Human Rights Film Network Award - Special Mention
-484,484,Paul Selvin Honorary Award
-485,485,Lifetime Achievement Diamond Award
-486,486,Gold Telly
-487,487,International Lifetime Achievement Award
-488,488,Crystal Iris
-489,489,Golden Pyramid
-490,490,Grand Acting Award
-491,491,Joseph Plateau Life Achievement Award
-492,492,King Vidor Memorial Award
+0,0,Oscar
+1,1,Primetime Emmy
+2,2,BAFTA Film Award
+3,3,AACTA International Award
+4,4,Movies for Grownups Award
+5,5,Saturn Award
+6,6,EDA Award
+7,7,EDA Special Mention Award
+8,8,American Comedy Award
+9,9,Life Achievement Award
+10,10,AFCA Award
+11,11,ACCA
+12,12,Blockbuster Entertainment Award
+13,13,Film Excellence Award
+14,14,BSFC Award
+15,15,Critics Choice Award
+16,16,BFS Award
+17,17,Golden Camera
+18,18,CFCA Award
+19,19,CIC Award
+20,20,Chlotrudis Award
+21,21,CinEuphoria
+22,22,COFCA Award
+23,23,CCA Super Award
+24,24,Critics' Choice TV Award
+25,25,DFWFCA Award
+26,26,David
+27,27,Special David
+28,28,DFCS Award
+29,29,DGA Award
+30,30,Jury Award
+31,31,Career Achievement Award
+32,32,Chainsaw Award
+33,33,Golden Carp Film Award - International
+34,34,Golden Train Award
+35,35,Audience Award
+36,36,Truer Than Fiction Award
+37,37,Gala Tribute
+38,38,Dorian Award
+39,39,GAFCA Award
+40,40,Gold Derby Award
+41,41,Gold Derby TV Award
+42,42,Golden Apple
+43,43,Golden Camera for Lifetime Achievement
+44,44,Golden Globe
+45,45,Cecil B. DeMille Award
+46,46,Golden Schmoes
+47,47,Lifetime Achievement Award
+48,48,Grammy
+49,49,GWNYFCA Award
+50,50,HFCS Award
+51,51,Hollywood Film Award
+52,52,Huading Award
+53,53,IFJA Award
+54,54,ICP Award
+55,55,ICS Award
+56,56,IOMA
+57,57,KCFCC Award
+58,58,Best Actor
+59,59,LEJA Award
+60,60,ALFS Award
+61,61,LAFCA Award
+62,62,MTV Movie Award
+63,63,MCFCA Award
+64,64,Icon Award
+65,65,NBR Award
+66,66,NSFC Award
+67,67,NMFC Award
+68,68,NYFCC Award
+69,69,NDFS Award
+70,70,NTFCA Award
+71,71,Odyssey Award
+72,72,OFTA Film Award
+73,73,OFTA Television Award
+74,74,OFTA Film Hall of Fame
+75,75,OFCS Award
+76,76,People's Choice Award
+77,77,Razzie Award
+78,78,SDFCS Award
+79,79,SFBAFCC Award
+80,80,Donostia Lifetime Achievement Award
+81,81,Prize San Sebastián
+82,82,Satellite Award
+83,83,Golden Satellite Award
+84,84,Actor
+85,85,SLFCA Award
+86,86,Teen Choice Award
+87,87,TCA Award
+88,88,Kennedy Center Honors
+89,89,Queer Lion
+90,90,Jaeger-LeCoultre Glory to the Filmmaker Award
+91,91,Career Golden Lion
+92,92,Festival Prize
+93,93,WAFCA Award
+94,94,Yoga Award
+95,95,Felix
+96,96,Black Film Award
+97,97,AFI Award
+98,98,AAFCA Award
+99,99,All Def Movie Award
+100,100,Board of the Governors Award
+101,101,Britannia Award
+102,102,Silver Berlin Bear
+103,103,BET Award
+104,104,BFCC Award
+105,105,Black Movie Award
+106,106,Black Reel
+107,107,Freedom Award
+108,108,CIFCC Award
+109,109,Christopher Award
+110,110,DFCC
+111,111,Independent Spirit Award
+112,112,FFCC Award
+113,113,IGN Award
+114,114,Image Award
+115,115,Entertainer of the Year Award
+116,116,IFC Award
+117,117,IFTA Award
+118,118,Jupiter Award
+119,119,Best of the Fest
+120,120,Sierra Award
+121,121,Lone Star Film & Television Award
+122,122,Grace Award
+123,123,MTV TRL Award
+124,124,National Film and Television Award
+125,125,National Film Award
+126,126,NCFCA Award
+127,127,OFCC Award
+128,128,PGA Award
+129,129,Stanley Kramer Award
+130,130,PFCS Award
+131,131,Showmanship Award
+132,132,SFFCC Award
+133,133,Modern Master Award
+134,134,Scream Award
+135,135,SFCS Award
+136,136,ShoWest Award
+137,137,SEFCA Award
+138,138,Tribute to Independent Vision Award
+139,139,The BAM Award
+140,140,VFCC Award
+141,141,VVFP Award
+142,142,WFCC Award
+143,143,Humanitarian Award
+144,144,BAFTA Games Award
+145,145,Maverick Tribute Award
+146,146,Empire Award
+147,147,Robert Altman Award
+148,148,Gotham Independent Film Award
+149,149,Special Achievement Award
+150,150,Golden Nymph
+151,151,NAVGTR Award
+152,152,Sonny Bono Visionary Award
+153,153,Golden Aries
+154,154,Peter J. Owens Award
+155,155,Golden Space Needle Award
+156,156,Special Award
+157,157,STFC Award
+158,158,Webby Award
+159,159,TFCA Award
+160,160,TV Guide Award
+161,161,Star on the Walk of Fame
+162,162,Role Model Award
+163,163,BAFTA Children's Award
+164,164,Bravo Otto Germany
+165,165,British Independent Film Award
+166,166,Palme d'Or
+167,167,Honorary César
+168,168,Actor of the Year
+169,169,Distinguished Artisan Award
+170,170,IDA Award
+171,171,INOCA
+172,172,Blimp Award
+173,173,MTV Generation Award
+174,174,National Movie Award
+175,175,Honorable Mention
+176,176,Nexty
+177,177,Festival Award
+178,178,NRJ Ciné Award
+179,179,Desert Palm Achievement Award
+180,180,Rembrandt Award
+181,181,Georges Award
+182,182,SFX Award
+183,183,VGA
+184,184,Stinker Award
+185,185,Fondazione Mimmo Rotella Special Award
+186,186,Young Artist Award
+187,187,AACTA Award
+188,188,AFI International Award
+189,189,Global Achievement Award
+190,190,FCCA Award
+191,191,Jean Hersholt Humanitarian Award
+192,192,EDA Female Focus Award
+193,193,BTVA People's Choice Voice Acting Award
+194,194,BTVA Feature Film Voice Acting Award
+195,195,CableACE
+196,196,Cinema for Peace Award
+197,197,Truly Moving Picture Award
+198,198,Actress of the Year
+199,199,IOFCP Award
+200,200,Grand Jury Award
+201,201,FIPRESCI Prize
+202,202,Outstanding Performer of the Year Award
+203,203,Heart of Sarajevo
+204,204,Courage in Filmmaking Award
+205,205,Acting and Activism Award
+206,206,Hollywood Award
+207,207,AFCC Award
+208,208,Palmarés blogos de oro
+209,209,BOFCA Award
+210,210,DVD Premiere Award
+211,211,HCA Award
+212,212,IGN People's Choice Award
+213,213,IFCS Award
+214,214,Emmy
+215,215,OAFFC Award
+216,216,Ensemble Cast Award
+217,217,Lifetime Achievement Award in Motion Pictures
+218,218,Visionary Award
+219,219,PFCC Award
+220,220,PCC Award
+221,221,Sant Jordi
+222,222,Universe Reader's Choice Award
+223,223,Seattle Film Critics Award
+224,224,Volpi Cup
+225,225,Bronze Wrangler
+226,226,Davis Award
+227,227,Cinema Bloggers Award
+228,228,CCOP
+229,229,Días de Cine Award
+230,230,Guardian Film Award
+231,231,Halfway Award
+232,232,Big Green Help Award
+233,233,New Generation Award
+234,234,Spotlight Award
+235,235,NFCS Award
+236,236,New Media Film Festival Award
+237,237,Commander of the Order of Arts and Letters
+238,238,Cinema Vanguard Award
+239,239,American Riviera Award
+240,240,Platinum Award
+241,241,TV Land Award
+242,242,UFCA Award
+243,243,VES Award
+244,244,Just Kidding Award
+245,245,Bambi
+246,246,Distinguished Achievement in Performing Arts
+247,247,Will Rogers Motion Picture Pioneers Award
+248,248,Legend Award
+249,249,EMMA
+250,250,Man of the Year
+251,251,Special Silver Ribbon
+252,252,Wannabe Award
+253,253,Peabody Award
+254,254,Nova Award
+255,255,BEFTTA Award
+256,256,Golden Berlin Bear
+257,257,Capri Ensemble Cast Award
+258,258,Fotogramas de Plata
+259,259,Excellence in Media Award
+260,260,Silver Ribbon
+261,261,Special Prize for Outstanding Contribution to World Cinema
+262,262,MINY
+263,263,Honorary Prize
+264,264,Muse Award
+265,265,Creative Impact in Acting Award
+266,266,Kirk Douglas Award for Excellence in Film
+267,267,Honorary Heart of Sarajevo
+268,268,Taormina Arte Award
+269,269,Golden Phoenix
+270,270,World Artist Award
+271,271,FilmInk Award
+272,272,Henrietta Award
+273,273,Prism Award
+274,274,Golden Eye for Lifetime Achievement
+275,275,Life Career Award
+276,276,Almería Tierra de Cine Award
+277,277,Video Premiere Award
+278,278,Action Hero Award
+279,279,Hall of Fame
+280,280,Streamy Award
+281,281,Taurus Honorary Award
+282,282,Golden Icon Award
+283,283,CinemaCon Award
+284,284,Lifetime Achievement Diamond Award
+285,285,Sour Apple
+286,286,Redeemer Award
+287,287,Montecito Award
+288,288,Gold Telly
+289,289,WGA Award (Screen)
+290,290,Variety Award
+291,291,Woman of the Year
+292,292,European Film Award
+293,293,EFA People's Choice Award
+294,294,Outstanding European Achievement in World Cinema
+295,295,Evening Standard British Film Award
+296,296,Tribute Award
+297,297,Harper's Bazaar Award
+298,298,HCA TV Award
+299,299,INOCA TV
+300,300,Dilys Powell Award
+301,301,Film Award
+302,302,Golden Capital
+303,303,Tribute Actor Award
+304,304,Elvira Notari Prize
+305,305,WIN Award
+306,306,American Film Award
+307,307,LAOFCS Award
+308,308,Special Citation
+309,309,NYFCO Award
+310,310,Critics Award
+311,311,Silver Medallion Award
+312,312,Golden Slate
+313,313,Midseason Award
+314,314,BET Comedy Award
+315,315,International Lifetime Achievement Award
+316,316,Crystal Iris
+317,317,ACE
+318,318,Golden Pyramid
+319,319,Camie
+320,320,Clarence Derwent Award
+321,321,Grand Acting Award
+322,322,Joseph Plateau Life Achievement Award
+323,323,King Vidor Memorial Award
+324,324,Daytime Emmy
+325,325,François Truffaut Award
+326,326,Excellence Award
+327,327,Auteur Award
+328,328,Street Award
+329,329,Tokyo Grand Prix
+330,330,Annie
+331,331,Charlie Chaplin Icon Award
+332,332,Half-Life Award
+333,333,Grand Special Prize
+334,334,Fright Meter Award
+335,335,Barrymore Award
+336,336,Career Exellence Award
+337,337,German Independence Honorary Award
+338,338,Star of Excellence
+339,339,Silver Seashell
+340,340,Honorary Grand Prize
+341,341,Audience Choice Award
+342,342,Australian Star of the Year
+343,343,MTV Movie + TV Award
+344,344,Short Film Award
+345,345,BTVA Special/DVD Voice Acting Award
+346,346,President's Award
+347,347,Video Source Award
+348,348,Museum of Modern Art Film Benefit Honoree
+349,349,Chairman's Award
+350,350,Lifetime Achievement Award in Television
+351,351,Vision Award
+352,352,Krzysztof Kieslowski Award
+353,353,Vanguard Award
+354,354,Leo
+355,355,Spirit of Independence Award
+356,356,Best Actress
+357,357,International Star Award
+358,358,Indie Impact Award
+359,359,Chairman's Vanguard Award
+360,360,Courage in Acting Award
+361,361,Academy Fellowship
+362,362,Film Award in Gold
+363,363,Golden Laurel
+364,364,Golden Marc'Aurelio Acting Award
+365,365,Telegatto
+366,366,Cinescape Genre Face of the Future Award
+367,367,Golden Wave
+368,368,Jury Prize
+369,369,Hollywood Breakthrough Award
+370,370,Grand Jury Prize
+371,371,Joel Siegel Award
+372,372,Humanitas Prize
+373,373,American Music Award
+374,374,ASCAP Award
+375,375,Pioneering Spirit Award
+376,376,Kids' Choice Award
+377,377,MTV Europe Music Award
+378,378,VMA
+379,379,Soul Train Award
+380,380,Gold Creator Award
+381,381,Freedom of Expression Award
+382,382,Irina Palm
+383,383,ACCA TV
+384,384,David Lean Award for Direction
+385,385,Capri Director Award
+386,386,Capri Movie of the Year Award
+387,387,CEC Award
+388,388,Golden Eagle
+389,389,Grand Prix
+390,390,Outstanding Contribution to World Cinema
+391,391,Foreign Award
+392,392,Marquee Award
+393,393,Stanislavsky Prize
+394,394,Bob Hope Humanitarian Award
+395,395,ASECAN Award
+396,396,Bodil
+397,397,Best Director
+398,398,Filmmaker Award
+399,399,Screen International Award
+400,400,OFTA TV Hall of Fame
+401,401,Literary Award
+402,402,White Elephant
+403,403,VDKUF Award
+404,404,Fondazione Mimmo Rotella Award
+405,405,Golden Lion
+406,406,Brian Award
+407,407,Golden Osella
+408,408,Pasinetti Award
+409,409,Human Rights Film Network Award - Special Mention
+410,410,Paul Selvin Honorary Award
+411,411,Rising Star Award
+412,412,BAFTA TV Award
+413,413,C21's International Drama Award
+414,414,Dagger
+415,415,RTS Television Award
+416,416,Dynamic Duo Award
+417,417,Special Honorary Award
+418,418,BloodGuts UK Horror Award
+419,419,Gertrudis Award
+420,420,Premiere New Power Award
+421,421,Upstream Prize
+422,422,World Soundtrack Award
+423,423,YoungStar Award
+424,424,Screen Idol Award
+425,425,Special Jury Prize
+426,426,Vice/Martin Award
+427,427,Special Volpi Cup
+428,428,DVDX Award
+429,429,Honorary Golden Berlin Bear
+430,430,British LGBT Award
+431,431,Timeless Award
+432,432,Genie
+433,433,Stephen F. Kolzak Award
+434,434,Outfest Achievement Award
+435,435,Queerty
+436,436,ALMA Award
+437,437,Anthony Quinn Award for Achievement in Motion Pictures
+438,438,Antoñita Colomé Award
+439,439,Label Europa Cinemas
+440,440,Golden India Catalina
+441,441,Feroz Award
+442,442,Goya
+443,443,Honorary Goya
+444,444,Imagen Award
+445,445,Lasting Image Award
+446,446,ICS Cannes Award
+447,447,Ischia Actor Award
+448,448,José María Forqué Award
+449,449,Festival President's Award
+450,450,CineMerit Award
+451,451,Francisco Rabal Award
+452,452,Málaga Lifetime Achievement Award
+453,453,NCLR Bravo Award
+454,454,Premio ACE
+455,455,Award of the Spanish Actors Union
+456,456,Platino Award
+457,457,Honorary Award
+458,458,IF Award
+459,459,Silver Logie
+460,460,Feature Film Award
+461,461,Individual Award
+462,462,Gold Panda
+463,463,Film and Literature Award
+464,464,Leopard Club Award
+465,465,Crystal Award
+466,466,Joseph Plateau Award of Honour
+467,467,Virginia Film Award
+468,468,Invisible Woman Award
+469,469,Canadian Screen Award
+470,470,Best Supporting Actor
+471,471,Capri Actor Award
+472,472,Capri Legend Award
+473,473,Guinness World Record
+474,474,Achievement in Acting
+475,475,Legend of Cinema Award
+476,476,Outstanding Work in Cinema Award
+477,477,70th Anniversary Prize
+478,478,Capri Supporting Actress Award
+479,479,Cinema for Peace Honorary Award
+480,480,GQ Award
+481,481,Truly Moving Sound Award
+482,482,Logie
+483,483,Mill Valley Film Festival Award
+484,484,Gala Tribute Award
+485,485,Magnolia Award
+486,486,SFC Award
+487,487,Genre Award
+488,488,Trailblazer Award
+489,489,ADG Award
+490,490,Family Television Award
+491,491,Futurewave Youth Jury Award
+492,492,Action Movie Star of the Year

@@ -1,5 +1,6 @@
-import { Box, VStack } from "@chakra-ui/react";
+import { Box, HStack, Text, VStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { CustomLabel } from "./CustomLabel";
 import { SearchBar } from "./SearchBar";
 
 export interface ITable<T>{
@@ -38,6 +39,10 @@ export function TableSearchWrapper<T>({ data, searchFunc, searchPlaceholder, chi
                     borderRadius: "2xl"
                 }}
             />
+            <HStack justifyContent={"flex-end"} w={"100%"} pr={3}>
+                <Text fontSize={"xs"} color={"gray.500"}>Results:</Text>
+                <Text fontSize={"xs"} color={"gray.500"}>{data.length}</Text>
+            </HStack>
             <Box
                 w={"100%"}
                 overflowY={"scroll"}

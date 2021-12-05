@@ -7,6 +7,7 @@ import { IActorAbout, IActorsResponse } from "../types";
 import ActorCard from "../components/ActorCard";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { SearchBar } from "../components/SearchBar";
+import { CustomAlert } from "../components/CustomAlert";
 
 export function ActorList() {
     // STATE
@@ -29,7 +30,16 @@ export function ActorList() {
         search(searchStr);
     }, [searchStr, allActors])
 
-    if(isLoading) return <LoadingSpinner/>
+    if (error) return <CustomAlert status="error" alertTitle={error.title} alertDesc={error.desc} />
+    if (isLoading) return <LoadingSpinner />
+    if (allActors.length === 0) {
+        return (
+            <CustomAlert
+                status="info"
+                alertTitle="No data"
+                alertDesc="You might need to trigger webscraping using the button on the top right first!" />
+        )
+    }
 
     return (
         <VStack

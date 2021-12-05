@@ -3,7 +3,8 @@
 */
 CREATE TABLE IF NOT EXISTS actor (
 	act_href varchar(15) PRIMARY KEY NOT NULL,
-    act_fullname varchar(50) NOT NULL,
+    	act_fullname varchar(50) NOT NULL,
+    	act_rank smallint NOT NULL,
     -- "F": Female, "M": Male, "D": Diverse
 	act_sex char(1) NOT NULL,
 	act_img_url varchar(255) NOT NULL,

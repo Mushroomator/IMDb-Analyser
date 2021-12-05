@@ -1,13 +1,12 @@
-import concurrent.futures
-import itertools
 import logging
 import os
 from concurrent.futures import ThreadPoolExecutor
 
 from flask import Flask, redirect, url_for
 
-from imdb_analyser.actor_controller import actor_controller
-from imdb_analyser.movie_controller import movie_controller
+from imdb_analyser.utils.WebscrapingStatus import WebscrapingStatus
+from imdb_analyser.controller.actor_controller import actor_controller
+from imdb_analyser.controller.movie_controller import movie_controller
 from imdb_analyser.utils import DatabaseConnector
 from utils.WebScraper import WebScraper
 
@@ -21,13 +20,13 @@ app.register_blueprint(actor_controller)
 # configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(name)s]  [%(levelname)s] %(message)s')
 
-# create a thread pool with multiple worker threads to divide work
-max_workers = 1
-executor = ThreadPoolExecutor(max_workers=max_workers)
-workers = []
-
 
 web_scraper = None
+"""
+:type web_scraper: WebScraper
+Global instance of webscraper, which makes sure only
+one instance of a webscraper can run at any one time.
+"""
 no_all_actors = 50
 
 
@@ -69,52 +68,59 @@ def handle_web_scape():
 
     :return:
     """
-    global web_scraper, workers
+    global web_scraper
 
     if web_scraper:
-        redirect(url_for("/api/v1/scrape/progress"))
-    scraper = WebScraper()
-    web_scraper = scraper
+        redirect(url_for("handle_progress"))
 
-    def web_scrape_task_done(future, thread_id):
-        global web_scraper, workers
-        app.logger.info("Worker %d used for web scraping is done.", thread_id)
-        if thread_id == max_workers:
-            web_scraper = None
-            workers = tuple()
-            app.logger.info("Web scraped everything")
+    web_scraper = WebScraper()
+    # start webscraping in another thread so the main thread can keep serving requests
+    executor = ThreadPoolExecutor(max_workers=1)
+    DatabaseConnector.delete_all_data()
+    logging.info("Starting webscraping master thread...")
 
-    def create_web_scrape_task(thread_id):
-        future = executor.submit(scraper.scrape)
-        future.set_running_or_notify_cancel()
-        future.add_done_callback(lambda future: web_scrape_task_done(future, thread_id))
-        app.logger.info("Launching worker %d for web scraping...", thread_id)
-        return future
-
-    workers = (create_web_scrape_task(thread_id) for thread_id in range(1, max_workers + 1))
+    future = executor.submit(web_scraper.scrape)
+    future.add_done_callback(lambda _: logging.info("Webscraping master thread finished."))
 
     return {
         "success": True,
         "message": "Started web scraping from https://imdb.com...",
-        "progress": {
+        "monitorProgressVia": {
             "endpoint": "/api/v1/scrape/progress",
             "method": "POST",
-            "askAgainInS": 10
+            "intervalInS": 5
         }
     }
 
 
 @app.route("/api/v1/scrape/progress", methods=["POST"])
 def handle_progress():
+    """
+    Handles request for progress updates on the webscraping process.
+
+    :return: progress in percent of webscraping process, and status of webscraping process
+    """
+    global web_scraper
+
     if not web_scraper:
+        # there is no web scraping going on at the moment
         return {
-            "success": False,
-            "message": "No webscraper running at the moment"
+            "status": WebscrapingStatus.IDLE,
+            "progress": 0
         }
-    no_actors = web_scraper.processed_actors.get()
-    progress = no_actors / no_all_actors
+    progress = web_scraper.progress.get_progress()
+    if progress == 100:
+        # Webscraping is done, let garbage collector pick up
+        # the webscraper instance and report that the job is done
+        web_scraper = None
+        return {
+            "status": WebscrapingStatus.FINISHED,
+            "progress": progress
+        }
+
+    # webscraping is in progress, report current progress
     return {
-        "success": True,
+        "status": WebscrapingStatus.RUNNING,
         "progress": progress
     }
 

@@ -9,7 +9,16 @@ actor_controller = Blueprint("actor_controller", __name__, url_prefix="/api/v1/a
 
 @actor_controller.route("", methods=["POST"])
 def handle_actor_list():
+    """
+    Handle request to get all basic information on an actor/ actress.
+
+    :return:
+    """
+    # get all actors from the database
     all_actors_df = actor_model.get_all_actors_about()
+    # sort them by their rank
+    all_actors_df.sort_values(by=["act_rank"], ascending=True, inplace=True)
+    # convert to dictionary and send response back to client
     all_actors = all_actors_df.to_dict(orient="records")
     return {
         "timestamp": datetime.now().isoformat(),
@@ -19,11 +28,24 @@ def handle_actor_list():
 
 @actor_controller.route("/<string:actor_href>", methods=["POST"])
 def handle_actor_req(actor_href):
+    """
+    Handle request for a specific actor.
+    Get details about actor (about, awards, movies, ratings etc.)
+
+    :param actor_href: href/ actor-ID
+    :type actor_href: str
+    :return:
+    """
     # escape parameter as it could be manipulated by the user
     esc_actor_href = escape(actor_href)
 
     # ABOUT
     about_df = actor_model.get_actor_about(actor_id=esc_actor_href)
+    if about_df.empty:
+        return {
+            "timestamp": datetime.now().isoformat(),
+            "data": {}
+        }
     about = about_df.to_dict(orient="records")[0]
 
     # AWARDS

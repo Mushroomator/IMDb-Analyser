@@ -6,6 +6,7 @@ import { ActorDetails } from './ActorDetails';
 import { ActorList } from './ActorList';
 import { Home } from './Home';
 import { MovieList } from "./MovieList";
+import { CustomAlert } from "../components/CustomAlert";
 
 function App() {
   return (
@@ -36,7 +37,15 @@ function App() {
           <Route index element={<Home />} />
           <Route path="actors" element={<ActorList />} />
           <Route path="/actors/:actorId" element={<ActorDetails />} />
-          <Route path="/movies" element={<MovieList/>} />
+          <Route path="/movies" element={<MovieList />} />
+          <Route
+            path="*"
+            element={<CustomAlert
+              status="info"
+              alertTitle="Nothing here!"
+              alertDesc="The requested page does not exist :("
+            />}
+          />
         </Route>
       </Routes>
     </Grid>

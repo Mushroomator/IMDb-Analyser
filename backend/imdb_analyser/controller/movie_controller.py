@@ -33,6 +33,7 @@ def handle_movie_list():
     all_movies_df.fillna(0, inplace=True)
     # cast year to integer
     all_movies_df["mov_year"] = all_movies_df["mov_year"].astype(int)
+    all_movies_df.sort_values(by=["mov_rating"], ascending=False, inplace=True)
     all_movies = all_movies_df.to_dict(orient="records")
 
     return {

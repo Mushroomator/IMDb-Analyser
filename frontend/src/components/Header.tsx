@@ -1,10 +1,18 @@
-import { DeleteIcon, DownloadIcon } from "@chakra-ui/icons";
-import { Button, Grid, GridItem, Heading, HStack, IconButton, Image, Link, Tooltip } from "@chakra-ui/react";
+import { DeleteIcon, DownloadIcon, RepeatClockIcon } from "@chakra-ui/icons";
+import { Button, Grid, GridItem, Heading, HStack, IconButton, Image, Link, Tooltip, useDisclosure } from "@chakra-ui/react";
+import { LegacyRef, useCallback, useRef } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import logo from "../assets/logo.png";
-import { deleteAllDataFromDb, triggerWebscraping } from "../requests";
+import { DatabaseDeletionModal } from "./modals/DatabaseDeletionModal";
+import { WebscrapingModal } from "./modals/WebscrapingModal";
 
 export function Header() {
+    const { isOpen: isOpenConfirmDeletion, onOpen: onOpenConfirmDeletion, onClose: onCloseConfirmDeletion } = useDisclosure()
+    const { isOpen: isOpenWebscrape, onOpen: onOpenWebscrape, onClose: onCloseWebscrape } = useDisclosure()
+    const focusRef = useRef(null)
+
+
+
     return (
         <GridItem position={"sticky"} top={0} zIndex={"sticky"} maxH={"100%"} h={"100%"} w={"100%"} bg={"white"} gridArea={"header"} borderBottom={"1px"} borderColor={"gray.200"}>
             <Grid
@@ -22,7 +30,7 @@ export function Header() {
                     gridArea={"left"}
                 >
                     <HStack h={"100%"} maxH={"100%"} alignItems={"center"} justifyContent={"start"} w={"100%"}>
-                        <Image objectFit={"contain"} p={3} h={"100%"} maxW={"auto"} maxH={"100%"} src={logo} alt="IMDb Analyser Logo" justifySelf={"start"} />
+                        <Image ref={focusRef} objectFit={"contain"} p={3} h={"100%"} maxW={"auto"} maxH={"100%"} src={logo} alt="IMDb Analyser Logo" justifySelf={"start"} />
                         <Heading colorScheme={"blue"} display={["none", null, null, "block"]} size={"md"} justifyContent={"start"}>IMDb Analyser</Heading>
                     </HStack>
                 </GridItem>
@@ -95,6 +103,22 @@ export function Header() {
                 >
                     <HStack h={"100%"} w={"100%"} spacing={4} alignContent={"center"} justifyContent={"flex-end"} px={5}>
                         <Tooltip
+                            label={"Reload page"}
+                            colorScheme={"blue"}
+                            aria-label={"Reload page"}
+                            hasArrow
+                        >
+                            <IconButton
+                                aria-label="Reload page"
+                                icon={<RepeatClockIcon />}
+                                colorScheme={"blue"}
+                                variant={"outline"}
+                                onClick={() => window.location.reload()}
+                            >
+
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip
                             label={"Web scrape & insert"}
                             colorScheme={"blue"}
                             aria-label={"Web scrape & insert"}
@@ -105,12 +129,7 @@ export function Header() {
                                 icon={<DownloadIcon />}
                                 colorScheme={"blue"}
                                 variant={"outline"}
-                                onClick={async () => {
-                                    await triggerWebscraping()
-                                    setTimeout(() => {
-                                        window.location.reload()
-                                    }, 20 * 1000);
-                                }}
+                                onClick={onOpenWebscrape}
                             >
 
                             </IconButton>
@@ -126,17 +145,14 @@ export function Header() {
                                 icon={<DeleteIcon />}
                                 variant={"outline"}
                                 colorScheme={"blue"}
-                                onClick={async () => {
-                                    await deleteAllDataFromDb()
-                                    window.location.reload()
-                                }}>
+                                onClick={onOpenConfirmDeletion}>
                             </IconButton>
                         </Tooltip>
                     </HStack>
                 </GridItem>
             </Grid>
-
-
+            <DatabaseDeletionModal finalFocusRef={focusRef} isOpen={isOpenConfirmDeletion} onClose={onCloseConfirmDeletion} />
+            <WebscrapingModal finalFocusRef={focusRef} isOpen={isOpenWebscrape} onClose={onCloseWebscrape} />
 
         </GridItem>
     )

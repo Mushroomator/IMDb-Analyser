@@ -9,14 +9,12 @@ def get_all_movies():
 
     query = """
             SELECT mov.mov_href,
-                   mov.mov_title,
-        	       mov.mov_year,
-        	       mov.mov_rating,
-        	       mt.met_name
-            FROM actor AS act
-            INNER JOIN movie_cast AS mc ON act.act_href = mc.cast_actor_href
-            INNER JOIN movie AS mov ON mc.cast_movie_href = mov.mov_href
-            INNER JOIN medium_type as mt ON mov.mov_type = mt.met_id
+	               mov.mov_title,
+	               mov.mov_year,
+	               mov.mov_rating,
+	               mt.met_name
+            FROM movie AS mov
+            INNER JOIN medium_type AS mt ON mov.mov_type = mt.met_id
             """
 
     genres = DatabaseConnector.query(query_str=query)
@@ -30,10 +28,8 @@ def get_all_movie_genres():
     """
     query = """
     SELECT mg.mg_movie_href,
-	       gen.genre_name
-    FROM actor AS act
-    INNER JOIN movie_cast AS mc ON act.act_href = mc.cast_actor_href
-    INNER JOIN movie_genre AS mg ON mg.mg_movie_href = mc.cast_movie_href
+	gen.genre_name
+    FROM movie_genre AS mg
     INNER JOIN genre AS gen ON gen.genre_id = mg.mg_genre_id
     """
     movie_genres = DatabaseConnector.query(query_str=query)
