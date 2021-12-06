@@ -105,3 +105,4 @@ class Progress:
         """
         with self._lock:
             self.cur = self.max
+            logging.info(f"Set progress to finished. {self.cur}/{self.max} ({int(self.cur / self.max * 100)}%)")

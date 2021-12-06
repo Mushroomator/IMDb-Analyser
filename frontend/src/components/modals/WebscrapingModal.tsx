@@ -186,7 +186,7 @@ function WebscrapingFailed({ onClose, onConfirmed }: TModalClose & TModalConfirm
                 >
                     <AlertIcon boxSize='40px' mr={0} />
                     <AlertTitle mt={4} mb={1} fontSize='lg'>
-                        Deletion failed!
+                        Webscraping failed!
                     </AlertTitle>
                     <AlertDescription maxWidth='sm'>
                         Data could not be webscraped and inserted into the database. Retry?
@@ -201,7 +201,6 @@ function WebscrapingFailed({ onClose, onConfirmed }: TModalClose & TModalConfirm
                     variant='ghost'
                     onClick={() => {
                         onClose()
-                        window.location.reload()
                     }}
                     leftIcon={<SmallCloseIcon />}>
                     Cancel

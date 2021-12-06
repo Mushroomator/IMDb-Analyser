@@ -1,12 +1,14 @@
 import logging
 import os
 import sys
+from time import sleep
 
 import pandas as pd
 import sqlalchemy
 from psycopg2._psycopg import AsIs
 from sqlalchemy import create_engine, text
 from psycopg2 import sql
+from sqlalchemy.exc import OperationalError, SQLAlchemyError
 
 from imdb_analyser.data_classes.DataClass import DataClass
 
@@ -76,7 +78,11 @@ def query(query_str, query_params=None):
     :return: DataFrame containing result set
     """
 
-    return pd.read_sql(query_str, db_engine, params=query_params)
+    try:
+        result = pd.read_sql(query_str, db_engine, params=query_params)
+    except SQLAlchemyError as exc:
+        logging.warning("Could not connect to database. Error: %s. Query %s with params %s failed!", exc, query_str, str(query_params))
+    return result
 
 
 def insert_into_db_table(df, data_class):
@@ -98,7 +104,7 @@ def insert_into_db_table(df, data_class):
         df.to_sql(tab_name, db_engine, db_schema, if_exists="append", method=None, index=False, dtype=column_config)
         logging.info("Successfully inserted %d row(s) into table \"%s\"", df.shape[0], tab_name)
         return True
-    except Exception as exc:
+    except SQLAlchemyError as exc:
         logging.warning("Failed to insert %s row(s) into table \"%s\".", str(df.shape[0]), str(tab_name), exc_info=True)
         return False
 
@@ -106,8 +112,29 @@ def insert_into_db_table(df, data_class):
 
 db_host, db_port, db_user, db_database, db_password = read_db_config()
 db_schema = "public"
-db_engine = create_engine(f"postgresql+psycopg2://{db_user}:{db_password}@{db_host}:{db_port}/{db_database}")
-db_all_tables = pd.read_sql("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'", db_engine)
+db_enigne = None
+db_con_str = f"postgresql+psycopg2://{db_user}:{db_password}@{db_host}:{db_port}/{db_database}"
+db_engine = create_engine(db_con_str, pool_pre_ping=True, connect_args={'connect_timeout': 1})
+success = False
+retry_seconds = 1
+max_retry_seconds = 30
+while not success:
+    try:
+        logging.info("Trying to connect to database %s at %s:%s as user %s.", db_database, db_host, str(db_port), db_user)
+        db_engine.connect()
+        success = True
+        logging.info("Successfully connected to database %s at %s:%s as user %s.", db_database, db_host, str(db_port), db_user)
+    except SQLAlchemyError as exc:
+        success = False
+        logging.warning("Failed to connect to database %s at %s:%s as user %s. Error: %s. Retrying in %s second(s)...", db_database, db_host, str(db_port), db_user, exc, str(retry_seconds))
+        # exponential backoff for retrying to connect to the database (blocking at the moment)
+        new_retry_sec = retry_seconds * 2
+        if new_retry_sec >= max_retry_seconds:
+            new_retry_sec = max_retry_seconds
+        retry_seconds = new_retry_sec
+        sleep(retry_seconds * 3)
+
+db_all_tables = query(query_str="SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';")
 """
 Database engine. Single engine used for insertion and selection of data.
 """

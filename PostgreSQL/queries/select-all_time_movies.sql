@@ -1,11 +1,10 @@
 /*
-Query an actor's/actress's all time movies.
-
-Here an example for actor '/name/nm0000136' => Johnny Depp
+Select all movies stored in the database (independent of actor).
 */
-SELECT mov.mov_title,
-	mov.mov_year
-FROM actor AS act
-INNER JOIN movie_cast AS mc ON act.act_href = mc.cast_actor_href
-INNER JOIN movie AS mov ON mc.cast_movie_href = mov.mov_href
-WHERE act.act_href = '/name/nm0000136';
+SELECT mov.mov_href,
+       mov.mov_title,
+       mov.mov_year,
+       mov.mov_rating,
+       mt.met_name
+FROM movie AS mov
+INNER JOIN medium_type AS mt ON mov.mov_type = mt.met_id;

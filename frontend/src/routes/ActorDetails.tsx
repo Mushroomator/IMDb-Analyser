@@ -1,6 +1,7 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Heading, Spinner, Text, VStack } from "@chakra-ui/react";
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Heading, Link, Spinner, Text, Tooltip, VStack } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import { apiPrefix, mapSexIdentToTxt } from "../config";
+import { Link as ReactRouterLink } from "react-router-dom";
+import { actorPrefix, apiPrefix, baseDomain, mapSexIdentToTxt } from "../config";
 import { useFetch } from "../hooks/useFetch";
 import { IActorDetails, IActorDetailsResponse } from "../types";
 import { ActorRating } from "../components/ActorRating";
@@ -8,6 +9,7 @@ import { AwardTable } from "../components/AwardTable";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { SearchableMovieTable } from "../components/SearchableMovieTable";
 import { CustomAlert } from "../components/CustomAlert";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 
 export function ActorDetails() {
     // Read actor ID from URL path
@@ -37,6 +39,18 @@ export function ActorDetails() {
             borderRadius={"xl"}
             p={8}
             w={"100%"}>
+            <Box display={"flex"} w={"100%"} justifyContent={"flex-start"}>
+                <Link as={ReactRouterLink} to={`/actors`}>
+                    <ArrowBackIcon
+                        boxSize={"25px"}
+                        justifySelf={"flex-start"}
+                        color={"blue.500"}
+                        _hover={{
+                            borderRadius: "full",
+                            border: "1px  solid",
+                        }} />
+                </Link>
+            </Box>
             <Avatar
                 onClick={() => window.open(actorDetails.about.act_img_url, "_blank")?.focus()}
                 _hover={{
@@ -54,7 +68,13 @@ export function ActorDetails() {
                 colorScheme={"blue"}
                 showBorder={true}
                 borderColor={"blue.500"} />
-            <Heading>{actorDetails.about.act_fullname}</Heading>
+            <Tooltip label={`Click to show on imdb.com`} placement="right" hasArrow>
+                <Link href={`${baseDomain}${actorPrefix}${actorId}`} isExternal _hover={{ textDecoration: "None" }}>
+                    <Heading >{actorDetails.about.act_fullname}</Heading>
+                </Link>
+
+            </Tooltip>
+
             <Heading size={"sm"}>{`Rank ${actorDetails.about.act_rank}`}</Heading>
             <Text pb={8} fontSize={"sm"}>{mapSexIdentToTxt[actorDetails.about.act_sex]}</Text>
 
@@ -82,7 +102,7 @@ export function ActorDetails() {
                         </AccordionButton>
                     </h2>
                     <AccordionPanel pb={4} w={"100%"}>
-                        <SearchableMovieTable key={"top5-movie-table"} data={actorDetails.topFiveMovies} maxH="100%"/>
+                        <SearchableMovieTable key={"top5-movie-table"} data={actorDetails.topFiveMovies} maxH="100%" />
                     </AccordionPanel>
                 </AccordionItem>
                 <AccordionItem>
@@ -108,7 +128,7 @@ export function ActorDetails() {
                         </AccordionButton>
                     </h2>
                     <AccordionPanel pb={4}>
-                        <SearchableMovieTable key={"movie-table"} data={actorDetails.allTimeMovies}/>
+                        <SearchableMovieTable key={"movie-table"} data={actorDetails.allTimeMovies} />
                     </AccordionPanel>
                 </AccordionItem>
                 <AccordionItem>

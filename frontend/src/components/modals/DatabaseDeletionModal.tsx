@@ -50,7 +50,7 @@ export function DatabaseDeletionModal({ finalFocusRef, isOpen, onClose }: IModal
         confirm: <DatabaseDeletionConfirm onClose={onModalCancelled} onConfirmed={onDeletionConfirmed} />,
         inProgress: <DatabaseDeletionInProgress />,
         success: <DatabaseDeletionSuccess onClose={onModalCancelled} />,
-        failed: <DatabaseDeletionFailed onClose={onModalCancelled} onConfirmed={onDeletionConfirmed}/>
+        failed: <DatabaseDeletionFailed onClose={onModalCancelled} onConfirmed={onDeletionConfirmed} />
     }
 
 
@@ -64,7 +64,7 @@ export function DatabaseDeletionModal({ finalFocusRef, isOpen, onClose }: IModal
             isOpen={isOpen}
             motionPreset='scale'
         >
-            <ModalOverlay/>
+            <ModalOverlay />
             {modalConfig[status]}
         </Modal>
     )
@@ -93,7 +93,7 @@ function DatabaseDeletionInProgress() {
         <ModalContent>
             <ModalHeader>Deletion in progress...</ModalHeader>
             <ModalBody>
-                <LoadingSpinner height="200px"/>
+                <LoadingSpinner height="200px" />
             </ModalBody>
         </ModalContent>
     )
@@ -125,7 +125,14 @@ function DatabaseDeletionSuccess({ onClose }: TModalClose) {
                 </Alert>
             </ModalBody>
             <ModalFooter>
-                <Button colorScheme='blue' mr={3} onClick={onClose} leftIcon={<SmallCloseIcon />}>
+                <Button
+                    colorScheme='blue'
+                    mr={3}
+                    onClick={() => {
+                        onClose()
+                        window.location.reload()
+                    }}
+                    leftIcon={<SmallCloseIcon />}>
                     Close
                 </Button>
             </ModalFooter>

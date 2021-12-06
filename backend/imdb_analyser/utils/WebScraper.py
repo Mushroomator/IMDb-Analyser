@@ -1,9 +1,11 @@
 import concurrent.futures
 import logging
+import pathlib
 import re
 import sys
 import threading
 from concurrent.futures import ThreadPoolExecutor, FIRST_EXCEPTION, ALL_COMPLETED
+from os.path import join
 from timeit import default_timer as timer
 
 import numpy as np
@@ -31,7 +33,7 @@ ACTOR_PAGE_PREFIX = "/name/"
 MOVIE_PAGE_PREFIX = "/title/"
 # Set request header to US language to get english names for movies instead of german (= default)
 REQ_HEADERS = {"Accept-Language": "en-US,en;q=0.5"}
-
+CUR_FILE_LOC = pathlib.Path(__file__).parent.resolve()
 proxy = None
 
 
@@ -138,7 +140,7 @@ class WebScraper:
         self.get_all_movies_details()
         logging.info("Done. Got all movie details.")
         logging.info("Inserting gathered data into PostgreSQL database...")
-        self.put_into_dataframes(actor_details)
+        success = self.put_into_dataframes(actor_details)
         logging.info("Done. Inserted gathered data into PostgreSQL database.")
         # no set progress to finished! MUST be last instruction otherwise caller might think processing is finished when
         # it is not and thus suspend the call to early. In case of any failure during processing the progress will not
@@ -204,14 +206,54 @@ class WebScraper:
 
         :return:
         """
-        self.actor_df = pd.read_csv("data/actor.csv", usecols=Actor.db_columns())
-        self.award_category_df = pd.read_csv("data/award_category.csv", usecols=AwardCategory.db_columns())
-        self.medium_type_df = pd.read_csv("data/medium_type.csv", usecols=MediumType.db_columns())
-        self.movie_df = pd.read_csv("data/movie.csv", usecols=Movie.db_columns())
-        self.award_df = pd.read_csv("data/award.csv", usecols=Award.db_columns())
-        self.genre_df = pd.read_csv("data/genre.csv", usecols=Genre.db_columns())
-        self.movie_genre_df = pd.read_csv("data/movie_genre.csv", usecols=MovieGenre.db_columns())
-        self.movie_cast_df = pd.read_csv("data/movie_cast.csv", usecols=MovieCast.db_columns())
+        self.read_from_csv_to_table(self.actor_df, "data/actor.csv", columns=Actor.db_columns())
+        self.read_from_csv_to_table(self.award_category_df, "data/award_category.csv", columns=AwardCategory.db_columns())
+        self.read_from_csv_to_table(self.medium_type_df, "data/medium_type.csv", columns=MediumType.db_columns())
+        self.read_from_csv_to_table(self.movie_df, "data/movie.csv", columns=Movie.db_columns())
+        self.read_from_csv_to_table(self.award_df, "data/award.csv", columns=Award.db_columns())
+        self.read_from_csv_to_table(self.genre_df, "data/genre.csv", columns=Genre.db_columns())
+        self.read_from_csv_to_table(self.movie_genre_df, "data/movie_genre.csv", columns=MovieGenre.db_columns())
+        self.read_from_csv_to_table(self.movie_cast_df, "data/movie_cast.csv", columns=MovieCast.db_columns())
+
+    def read_from_csv_to_table(self, df, path, columns):
+        """
+        Read content from .csv files into dataframe.
+
+        :param df: Dataframe to read the data into
+        :type df: pd.DataFrame
+        :param path: path to read from
+        :type path: str
+        :param columns: columns to read
+        :type columns: list[str]
+        :return: dataframe with data
+        """
+        full_path = join("/imdb-analyser-project/backend/", path)
+        logging.info("Reading columns %s from %s...", columns, full_path)
+        try:
+            df.to_csv(path, usecols=columns)
+            logging.info("Successfully read columns %s from %s.", columns, full_path)
+        except IOError as e:
+            logging.warning("Failed to read from %s. Error: %s", full_path, e)
+
+    def write_table_to_csv(self, df, path, columns):
+        """
+        Write content of a table/ dataframe to a .csv file
+
+        :param df: dataframe to write as .csv
+        :type df: pd.DataFrame
+        :param path: path to write to
+        :type path: str
+        :param columns: columns to write
+        :type columns: list[str]
+        :return:
+        """
+        full_path = join("/imdb-analyser-project/backend/", path)
+        logging.info("Writing columns %s to %s...", columns, full_path)
+        try:
+            df.to_csv(path, columns=columns)
+            logging.info("Successfully written columns %s to %s.", columns, full_path)
+        except IOError as e:
+            logging.warning("Failed to write to %s. Error: %s", full_path, e)
 
     def write_to_csv_files(self):
         """
@@ -219,14 +261,16 @@ class WebScraper:
 
         :return:
         """
-        self.actor_df.to_csv("data/actor.csv", columns=Actor.db_columns())
-        self.award_category_df.to_csv("data/award_category.csv", columns=AwardCategory.db_columns())
-        self.medium_type_df.to_csv("data/medium_type.csv", columns=MediumType.db_columns())
-        self.movie_df.to_csv("data/movie.csv", columns=Movie.db_columns())
-        self.award_df.to_csv("data/award.csv", columns=Award.db_columns())
-        self.genre_df.to_csv("data/genre.csv", columns=Genre.db_columns())
-        self.movie_genre_df.to_csv("data/movie_genre.csv", columns=MovieGenre.db_columns())
-        self.movie_cast_df.to_csv("data/movie_cast.csv", columns=MovieCast.db_columns())
+        logging.info("Writing data into .csv files...")
+        self.write_table_to_csv(self.actor_df, "data/actor.csv", columns=Actor.db_columns())
+        self.write_table_to_csv(self.award_category_df, "data/award_category.csv", columns=AwardCategory.db_columns())
+        self.write_table_to_csv(self.medium_type_df, "data/medium_type.csv", columns=MediumType.db_columns())
+        self.write_table_to_csv(self.movie_df, "data/movie.csv", columns=Movie.db_columns())
+        self.write_table_to_csv(self.award_df, "data/award.csv", columns=Award.db_columns())
+        self.write_table_to_csv(self.genre_df, "data/genre.csv", columns=Genre.db_columns())
+        self.write_table_to_csv(self.movie_genre_df, "data/movie_genre.csv", columns=MovieGenre.db_columns())
+        self.write_table_to_csv(self.movie_cast_df, "data/movie_cast.csv", columns=MovieCast.db_columns())
+        logging.info("Written all data into .csv files...")
 
     def insert_into_db(self):
         """
@@ -262,9 +306,11 @@ class WebScraper:
 
     def put_into_dataframes(self, actor_details):
         """
+        Insert all data from the dataframes into the PostgreSQL database.
 
-        :param actor_details:
-        :return:
+        :param actor_details: all actor details
+        :type actor_details: list[Actor]
+        :return: true if all data was successfully inserted into database, false otherwise
         """
         keys = list(self.all_genres)
         self.genre_df["genre_id"] = range(len(keys))
@@ -284,8 +330,6 @@ class WebScraper:
 
         transformed_actors = map(self.process_actor, actor_details)
         self.actor_df = pd.DataFrame(list(transformed_actors), columns=Actor.db_columns())
-        # pd.set_option('display.max_columns', None)
-        # pd.set_option('display.max_rows', None)
 
         # Process each movie (use map() built-in for better performance)
         # i. e. Transform movie object and fill related tables MovieGenre und Genre
@@ -307,9 +351,12 @@ class WebScraper:
 
         self.genre_df = self.genre_df.reset_index()
         self.write_to_csv_files()
-        self.insert_into_db()
-
-        logging.info("Insertion into actor table is done")
+        success = self.insert_into_db()
+        if not success:
+            logging.warning("Not all data could be inserted into the database.")
+        else:
+            logging.info("Successfully inserted all data.")
+        return success
 
     def get_actor_hrefs(self, list_page):
         """Get hrefs for all the relevant actors/ actresses.
@@ -625,7 +672,7 @@ class WebScraper:
         start = timer()
         workers = [self.executor.submit(process_movie, href, movie, count) for count, (href, movie) in
                    enumerate(self.movie_dict.items())]
-        done_tasks, pending_tasks = concurrent.futures.wait(workers, return_when=FIRST_EXCEPTION)
+        done_tasks, pending_tasks = concurrent.futures.wait(workers, return_when=ALL_COMPLETED)
         end = timer()
         logging.info("Workers done: Tasks completed: %d\tTasks pending: %s", len(done_tasks), len(pending_tasks))
         elapsed = end - start
@@ -698,12 +745,3 @@ class WebScraper:
         elapsed = end - start
         logging.info("Gathered all actor data in %dmin %dsec", int(elapsed // 60), int(elapsed % 60))
         return actors
-
-
-# scraper = WebScraper()
-# scraper.scrape()
-
-# scraper.read_from_csv_files()
-# scraper.insert_into_db()
-# result = scraper.get_movie_details("tt0134119", Movie("tt0134119", "test", 2021, "Movie"))
-# print(result)

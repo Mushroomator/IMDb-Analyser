@@ -51,7 +51,7 @@ export function MovieTable({ data, maxH }: ITable<IActorMovie>) {
         }
         else {
             await sortAscBy<IActorMovie>(movies, prop);
-            setSortedBy({ sortedBy: prop, asc: true })
+            setSortedBy({ sortedBy: prop, asc: false })
         }
     }
 
@@ -59,6 +59,9 @@ export function MovieTable({ data, maxH }: ITable<IActorMovie>) {
     return (
         <VStack w={"100%"}>
             <HStack justifyContent={"flex-end"} w={"100%"}>
+                <Text fontSize="xs" color="gray.500">Movies:</Text>
+                <Text fontSize="xs" color="gray.500">{movies.length}</Text>
+                <Text fontSize="xs" color="gray.500">|</Text>
                 <Text fontSize="xs" color="gray.500">Sorted by:</Text>
                 <Text fontSize="xs" color="gray.500">{text2Col[sortedBy.sortedBy]}</Text>
                 {sortedBy.asc ? <ChevronUpIcon color={"gray.500"} /> : <ChevronDownIcon color={"gray.500"} />}

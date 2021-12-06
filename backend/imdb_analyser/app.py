@@ -20,7 +20,6 @@ app.register_blueprint(actor_controller)
 # configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(name)s]  [%(levelname)s] %(message)s')
 
-
 web_scraper = None
 """
 :type web_scraper: WebScraper
@@ -30,10 +29,23 @@ one instance of a webscraper can run at any one time.
 no_all_actors = 50
 
 
+@app.errorhandler(404)
+def page_not_found(err):
+    """
+    Serve index.html so the React frontend can start up and take over.
+    Because client-side routing is in-place reloading the page which is not the "/"
+    route will result in a 404 error. In that case just send the "index.html"
+    so the client-side routing will take effect again.
+
+    :return: index.html
+    """
+    return app.send_static_file("index.html")
+
+
 @app.route("/")
 def index():
     """
-    Serve index.html so the react frontend can start up and take over.
+    Serve index.html so the React frontend can start up and take over.
     :return: index.html
     """
     return app.send_static_file("index.html")
@@ -122,6 +134,19 @@ def handle_progress():
     return {
         "status": WebscrapingStatus.RUNNING,
         "progress": progress
+    }
+
+
+@app.route("/api/v1/healthcheck")
+def handle_healthcheck():
+    """
+    Handle a healtcheck request to make sure the webserver is still up and running.
+    User e.g. by the Docker image.
+
+    :return:
+    """
+    return {
+        "status": "Up"
     }
 
 
