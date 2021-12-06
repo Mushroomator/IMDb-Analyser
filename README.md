@@ -59,7 +59,7 @@ Wait a few seconds and run `docker ps -a` again and you should see the status of
 
 You may now access pgAdmin on [http://localhost:80](http://localhost:80) and login as `admin` user using the password `simplepw` or access the web GUI for the application by visiting [http://localhost:5000](http://localhost:5000).
 
-Using the following command you can later stop the complete ^^°°°°°°°°°°°stack:
+Using the following command you can later stop the complete stack:
 ```bash
 docker-compose down
 ```
@@ -75,7 +75,7 @@ Here is a list of the most important directories and their content within this r
 
 ## User documentation
 ### Pages
-There are three main pages within the application
+There are three main pages within the application.
 
 #### List of actors
 Shows a list of all 50 actors listed [here](https://www.imdb.com/list/ls053501318/). You may also search for a specific actor.
