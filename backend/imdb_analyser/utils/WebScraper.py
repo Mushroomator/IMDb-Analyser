@@ -29,7 +29,7 @@ logging.basicConfig(filename="test.log", encoding="UTF-8", level=logging.INFO,
                     format='%(asctime)s [%(name)s]  [%(levelname)s] %(message)s')
 
 BASE_DOMAIN = "http://www.imdb.com"
-ACTOR_PAGE_PREFIX = "/name/"
+nameACTOR_PAGE_PREFIX = "/name/"
 MOVIE_PAGE_PREFIX = "/title/"
 # Set request header to US language to get english names for movies instead of german (= default)
 REQ_HEADERS = {"Accept-Language": "en-US,en;q=0.5"}
@@ -131,7 +131,7 @@ class WebScraper:
             return False
         logging.info("Done. Got list of actors.")
         parsed_list_page = BeautifulSoup(list_page.text, "html.parser")
-        actor_ranks = self.get_actor_hrefs(parsed_list_page)
+        actor_ranks = self.get_actors(parsed_list_page)
         actor_ids = list(actor_ranks.keys())
         logging.info("Getting all actor details for actors %s...", actor_ids)
         actor_details = self.get_all_actors_details(actor_ranks)
@@ -358,7 +358,7 @@ class WebScraper:
             logging.info("Successfully inserted all data.")
         return success
 
-    def get_actor_hrefs(self, list_page):
+    def get_actors(self, list_page):
         """Get hrefs for all the relevant actors/ actresses.
 
         :param list_page: parsed HTML for "actor list page"

@@ -2,7 +2,7 @@ from imdb_analyser.utils import DatabaseConnector
 
 def get_all_actors_about():
     """
-    Get all information about all actors/ actresses
+    Get all information about all actors/ actresses.
 
     :return: all information about all actors/ actresses
     """
@@ -21,7 +21,7 @@ def get_all_actors_about():
 
 def get_actor_about(actor_id):
     """
-    Get all information about an actor/ actress
+    Get all information about an actor/ actress.
 
     :param actor_id: actor-ID
     :return: all information about an actor/ actress

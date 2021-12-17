@@ -1,0 +1,68 @@
+all_movies_dict = dict()
+BASE_DOMAIN = https: // imdb.com
+LIST_URL = BASE_DOMAIN + /list/ls05350138
+
+scrape()
+  actors = get_actors(LIST_URL)
+   actor_details = get_all_actors_details(actors)
+    movie_details = get_all_movie_details(all_movies_dict)
+
+get_and_parse_page(url)
+  page = get(list_url)
+   return parse_html(page)
+
+get_actors(list_url)
+  parsed = get_and_parse_page(list_url)
+   actor_id = extract_actor_id(p_from_pagearsed)
+    actor_rank = extract_actor_rank_from_page(parsed)
+    actor_href = extract_actor_href_from_page(parsed)
+
+get_all_actors_details(actors)
+  list_of_actors = list()
+   for each actor in actors do
+      actor_details = get_actor_details(actor.id)
+       list_of_actors.append(actor_details)
+    return list_of_actors
+
+get_actor_details(actor_id)
+   parsed = get_and_parse_page(BASE_DOMAIN + /name / + actor_id)
+    fullname = extract_fullname_from_page(parsed)
+    sex = extract_sex_from_page(parsed)
+    img_url = extract_img_url(parsed)
+    biography = get_actor_biography(actor_id)
+    actor_movies = get_actor_movies(parsed)
+    merge actor_movies with all_movies_dict  # to only keep unique movies
+    awards = get_actor_awards(actor.id)
+    return Actor(actor_id, fullname, sex, img_url, biography, awards, actor_movies)
+
+
+get_actor_movies(parsed_actor_page)
+  movie_table = extract_movie_table_from_page(parsed_actor_page)
+
+   movie_dictionary = dict()
+    for each row in movie_table do
+      movie_href = extract_href_from_page(row)
+       movie_type = extract_type_from_page(row)
+        movie_year = extract_year_from_page(row)
+        movie_title = extract_movie_title_from_page(row)
+        movie_dictionary[movie_href] = Movie(
+            movie_href, movie_type, movie_year, movie_title)
+    return movie_dictionary
+
+get_actor_awards(actor_id)
+   parsed = get_and_parse_page(BASE_DOMAIN + /name / + actor_id + /awards)
+    award_tables = extract_award_tables_from_page(parsed)
+
+    list_of_awards = list()
+    for each award_table in award_tables do
+      for each row in award_table do
+          year = extract_award_year_from_page(row)
+           category = extract_award_category_from_page(row)
+            outcome = extract_award_outcome_from_page(row)
+            description = extract_award_description_from_page(row)
+            movie_name = extract_award_movie_name_from_page(row)
+            movie_href = extract_award_movie_href_from_page(row)
+            award = Award(year, category, outcome,
+                          description, movie_name, movie_href)
+            list_of_awards.append(award)
+    return list_of_awards
