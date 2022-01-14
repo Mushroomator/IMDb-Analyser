@@ -29,7 +29,7 @@ logging.basicConfig(filename="test.log", encoding="UTF-8", level=logging.INFO,
                     format='%(asctime)s [%(name)s]  [%(levelname)s] %(message)s')
 
 BASE_DOMAIN = "http://www.imdb.com"
-nameACTOR_PAGE_PREFIX = "/name/"
+ACTOR_PAGE_PREFIX = "/name/"
 MOVIE_PAGE_PREFIX = "/title/"
 # Set request header to US language to get english names for movies instead of german (= default)
 REQ_HEADERS = {"Accept-Language": "en-US,en;q=0.5"}

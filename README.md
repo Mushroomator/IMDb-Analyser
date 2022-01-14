@@ -24,6 +24,7 @@ Assessment for "Applied Data Science with Python" course taught at OTH Regensbur
     - [PostgreSQL](#postgresql)
     - [pgAdmin](#pgadmin)
   - [Requirements](#requirements)
+  - [Development/ Debug/ Run from IDE](#development-debug-run-from-ide)
   - [License](#license)
 
 
@@ -34,7 +35,7 @@ The application is deployed as a complete application stack. To make that work y
 
 Second, you need to clone this repository:
 ```bash
-git clone https://github.com/Mushroomator/kpi-collection.git
+git clone https://github.com/Mushroomator/IMDb-Analyser.git
 ```
 
 Now move into the cloned repository
@@ -49,10 +50,10 @@ docker-compose up
 
 You can check whether the deployment was successful by running `docker ps -a` which displays all currently running containers on the system.
 As each of the deployed containers has a healthcheck configured to ensure the service runs as expected, you can also check the current health status for a container using this command.
-Wait a few seconds and run `docker ps -a` again and you should see the status of the containers going from *starting* to *healthy*. That's when every thing is ready to go. You should get an output similiar to the following table:
+Wait a few seconds and run `docker ps -a` again and you should see the status of the containers going from *starting* to *healthy*. That's when everything is ready to go. You should get an output similiar to the following table:
 
-| CONTAINER ID | IMAGE                              | ... | STATUS                  | PORTS                                      | NAMES         |
-| ------------ | ---------------------------------- | --- | ----------------------- | ------------------------------------------ | ------------- |
+| CONTAINER ID | IMAGE                              | ... | STATUS                 | PORTS                                      | NAMES         |
+| ------------ | ---------------------------------- | --- | ---------------------- | ------------------------------------------ | ------------- |
 | cc7b6b081254 | postgres:14.0-alpine               | ... | Up 2 minutes (healthy) | 0.0.0.0:5432->5432/tcp, :::5432->5432/tcp  | postgres-db   |
 | df3e6dd5c141 | dpage/pgadmin4:6.2                 | ... | Up 2 minutes (healthy) | 0.0.0.0:80->80/tcp, :::80->80/tcp, 443/tcp | pgadmin       |
 | 7d0a99cef6b0 | ghcr.io/mushroomator/imdb-analyser | ... | Up 2 minutes (healthy) | 0.0.0.0:5000->5000/tcp, :::5000->5000/tcp  | imdb-analyser |
@@ -67,10 +68,10 @@ docker-compose down
 ## Repository structure
 Here is a list of the most important directories and their content within this repository:
 - [backend](backend/): Code for the backend
-- [charts](charts/): Chart of visualizing the application stack and an ERD
+- [charts](charts/): Source code for charts shown in project report
 - [docs](docs/): All files related/ required for the documentation of this project
 - [frontend](frontend/): Code for the frontend
-- [pgAdmin](pgAdmin/): Confiuration files for pgAdmin
+- [pgAdmin](pgAdmin/): Configuration files for pgAdmin
 - [PostgreSQL](PostgreSQL/): Configuration files/ queries for PostgreSQL database
 
 ## User documentation
@@ -109,7 +110,7 @@ In case the webscraping failed, wait a few minutes (to ensure the imdb.com is no
 You can delete all data in the database manually. To do so select the button on the top right and confirm the deletion when prompted.
 ![Webapp screenshot: deletion prompt](docs/assets/screenshot_webapp_delete_data_start.png)
 
-Deletion only takes a short amount of time and you will be notified whether the deletion was successful.
+Deletion only takes a short amount of time and you will be notified whether the deletion was successful or not.
 ![Webapp screenshot: deletion successful](docs/assets/screenshot_webapp_delete_data_success.png)
 
 ### Export data as .csv
@@ -141,8 +142,24 @@ You can access pgAdmin by visiting [http://localhost:80](http://localhost:80) on
 ## Requirements
 The Python backend relies on ordered dictionaries so a **Python version >= 3.7** is needed for the application to work correctly. The provided Docker image uses Python 3.9 as this was also used during development.
 
+## Development/ Debug/ Run from IDE
+In case you want to further develop this application, run or debug the app using an IDE you can of course do so. In that case you need to clone the repository first.
+```bash
+git clone https://github.com/Mushroomator/IMDb-Analyser.git
+```
+Then you need to install the frontend project using `npm` and the backend project using `pip` and [requirements.txt](./backend/requirements.txt).
+```bash
+cd IMDb-Analyser/frontend
+npm install
+```
+```bash
+cd IMDb-Analyser/backend
+pip install -R requirements.txt
+```
+You should now be able to run the project locally (IDE, terminal etc.).
+
 ## License
-Copyright 2021 Thomas Pilz
+Copyright 2022 Thomas Pilz
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
