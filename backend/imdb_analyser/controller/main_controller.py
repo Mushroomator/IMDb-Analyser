@@ -11,7 +11,7 @@ from imdb_analyser.utils.WebScraper import WebScraper
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(name)s]  [%(levelname)s] %(message)s')
 
 # create main controller
-main_controller = Blueprint("main_controller", __name__, url_prefix="/")
+main_controller = Blueprint("main_controller", __name__, url_prefix="/api/v1")
 
 web_scraper = None
 """
@@ -22,29 +22,7 @@ one instance of a webscraper can run at any one time.
 no_all_actors = 50
 
 
-@main_controller.errorhandler(404)
-def page_not_found(err):
-    """
-    Serve index.html so the React frontend can start up and take over.
-    Because client-side routing is in-place reloading the page which is not the "/"
-    route will result in a 404 error. In that case just send the "index.html"
-    so the client-side routing will take effect again.
-
-    :return: index.html
-    """
-    return main_controller.send_static_file("index.html")
-
-
-@main_controller.route("")
-def index():
-    """
-    Serve index.html so the React frontend can start up and take over.
-    :return: index.html
-    """
-    return main_controller.send_static_file("index.html")
-
-
-@main_controller.route("/api/v1/delete-all", methods=["DELETE"])
+@main_controller.route("/delete-all", methods=["DELETE"])
 def handle_delete():
     """
     Deletion of all data in the database is requested.
@@ -66,7 +44,7 @@ def handle_delete():
     return msg
 
 
-@main_controller.route("/api/v1/scrape", methods=["POST"])
+@main_controller.route("/scrape", methods=["POST"])
 def handle_web_scape():
     """
     Triggers webscraping from https://imdb.com
@@ -98,7 +76,7 @@ def handle_web_scape():
     }
 
 
-@main_controller.route("/api/v1/scrape/progress", methods=["POST"])
+@main_controller.route("/scrape/progress", methods=["POST"])
 def handle_progress():
     """
     Handles request for progress updates on the webscraping process.
@@ -130,7 +108,7 @@ def handle_progress():
     }
 
 
-@main_controller.route("/api/v1/healthcheck")
+@main_controller.route("/healthcheck")
 def handle_healthcheck():
     """
     Handle a healthcheck request to make sure the webserver is still up and running.
