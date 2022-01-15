@@ -431,7 +431,7 @@ class WebScraper:
         :return: list of all movies the actor/ actress was involved in
         """
         # Replace '&nbsp;' which is turned to Unicode by beautiful soup with actual space
-        all_movies = actor_page.find_all("div", class_="filmo-row", id=re.compile("^actor-"))
+        all_movies = actor_page.find_all("div", class_="filmo-row", id=re.compile("^actor-|^actress-"))
 
         # compile regex up-front to increase performance
         match_movie_id = re.compile("(?<=\/title\/)\w*")

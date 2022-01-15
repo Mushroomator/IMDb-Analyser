@@ -1,3 +1,5 @@
+import logging
+
 from flask import Blueprint
 from datetime import datetime
 
@@ -78,7 +80,10 @@ def handle_actor_req(actor_href):
 
 
     # ALL TIME MOVIES
-    all_time_movies = movies_df[["mov_href", "mov_year", "mov_title", "mov_rating", "met_name", "mov_genres"]].sort_values(by=["mov_year"], ascending=False).fillna(0).to_dict(orient="records")
+    movies_df.fillna(0, inplace=True)
+    movies_df["mov_rating"] = movies_df["mov_rating"].astype(float)
+    all_time_movies = movies_df[["mov_href", "mov_year", "mov_title", "mov_rating", "met_name", "mov_genres"]].sort_values(by=["mov_year"], ascending=False)
+    all_time_movies = all_time_movies.to_dict(orient="records")
 
     # RATINGS
     # get everything required to calculate with rating
@@ -86,6 +91,7 @@ def handle_actor_req(actor_href):
     # drop movies without a rating
     rating_df.dropna(inplace=True)
     mean_overall = rating_df["mov_rating"].mean()
+    logging.info(rating_df)
     top5_movies = movies_df[["mov_href", "mov_year", "mov_title", "mov_rating", "met_name", "mov_genres"]].nlargest(columns=["mov_rating"], n=5).to_dict(orient="records")
     movie_rating_per_year_df = rating_df.groupby(by=["mov_year"], as_index=False).mean()
     movie_rating_per_year = movie_rating_per_year_df.to_dict(orient="records")
